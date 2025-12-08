@@ -138,7 +138,7 @@ const ChartCard = ({
         datasets: [
           {
             label: label,
-            data: lineData.map((item) => ({ x: new Date(item.date), y: item.value })),
+            data: lineData.map((item) => ({ x: new Date(item.date).getTime(), y: item.value })),
             borderColor: gradientColors.start,
             borderWidth: 0,
             fill: false,
@@ -318,7 +318,7 @@ const ChartCard = ({
     };
 
     chart.data.datasets[0].data = lineData.map((item) => ({
-      x: new Date(item.date),
+      x: new Date(item.date).getTime(),
       y: item.value,
     }));
     chart.data.datasets[0].label = label;

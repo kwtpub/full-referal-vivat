@@ -149,7 +149,7 @@ const EditAgentModal = ({ isOpen, onClose, onSuccess, agent }: EditAgentModalPro
                 <Checkbox
                   label="Активен"
                   checked={isActive}
-                  onChange={(checked) => setIsActive(checked)}
+                  onChange={(e) => setIsActive(e.target.checked)}
                 />
               </div>
             </div>
