@@ -26,14 +26,27 @@ app.use(
       // В development разрешаем все origins (включая dev tunnels)
       if (isDev || !origin) return callback(null, true);
 
-      if (allowedOrigins.includes(origin)) {
+      // Проверяем точное совпадение или совпадение без протокола
+      const normalizedOrigin = origin?.toLowerCase();
+      const isAllowed = allowedOrigins.some((allowed) => {
+        const normalizedAllowed = allowed.toLowerCase();
+        return normalizedOrigin === normalizedAllowed || 
+               normalizedOrigin === normalizedAllowed.replace(/^https?:\/\//, '');
+      });
+
+      if (isAllowed) {
         return callback(null, true);
       }
 
+      // Логируем для отладки
+      console.log('CORS blocked origin:', origin);
+      console.log('Allowed origins:', allowedOrigins);
+      
       return callback(new Error('Not allowed by CORS'));
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['Content-Type'],
   })
 );
 

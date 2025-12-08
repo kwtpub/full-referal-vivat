@@ -41,6 +41,9 @@ export default defineConfig({
       },
     }),
   ],
+  css: {
+    transformer: 'postcss',
+  },
   optimizeDeps: {
     include: ['chart.js', 'chartjs-adapter-date-fns'],
     exclude: [],
