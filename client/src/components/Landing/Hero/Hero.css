@@ -1,0 +1,110 @@
+.landing-hero {
+  width: 100%;
+  min-height: 80vh;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  padding-top: clamp(120px, 15vh, 150px);
+  padding-bottom: 180px;
+  isolation: isolate;
+}
+
+.landing-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -51px;
+  width: 484px;
+  height: 670px;
+  background: rgba(8, 8, 8, 0.5);
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+
+.landing-hero-container {
+  width: 90%;
+  max-width: 1300px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.landing-hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 60px;
+}
+
+.landing-hero-title {
+  display: flex;
+  flex-direction: column;
+  gap: -5px;
+  margin: 0;
+}
+
+.landing-hero-title-line {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: clamp(32px, 4.5vw, 64px);
+  line-height: 1.21em;
+  color: #efefef;
+  display: block;
+}
+
+.landing-hero-button {
+  width: 198px;
+  height: 60px;
+  padding: 12px;
+  border-radius: 8px;
+  background: linear-gradient(137deg, #C8272A 0%, #621315 100%);
+  font-family: 'Roboto', 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.29em;
+}
+
+.landing-hero-button .button-text {
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .landing-hero {
+    padding-top: 132px;
+    padding-bottom: 120px;
+    min-height: auto;
+  }
+
+  .landing-hero-container {
+    width: calc(100% - 60px);
+    max-width: 330px;
+  }
+
+  .landing-hero-content {
+    gap: 48px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .landing-hero-title {
+    width: 100%;
+    margin-top: -40px;
+  }
+
+  .landing-hero-title-line {
+    font-size: 24px;
+    font-weight: 900;
+  }
+
+  .landing-hero-button {
+    width: 100%;
+    max-width: 281px;
+    height: 56px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 250px;
+  }
+}
+

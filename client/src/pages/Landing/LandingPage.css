@@ -1,0 +1,43 @@
+.landing-page {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #090909;
+  background-image: url('/images/VBALCK.jpg');
+  background-size: 100% auto;
+  background-position: center top;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+  isolation: isolate;
+}
+
+.landing-page > * {
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .landing-page {
+    background-image: url('/images/vid-lodki-na-vode.jpg');
+    background-size: 100% auto;
+    background-position: center top;
+    background-attachment: scroll;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-page {
+    background-size: 100% auto;
+    background-position: center top;
+    min-height: 100vh;
+  }
+}
+
+@media (max-width: 393px) {
+  .landing-page {
+    background-size: cover;
+    background-position: center 0%;
+  }
+}
+

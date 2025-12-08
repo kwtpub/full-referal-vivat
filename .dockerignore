@@ -1,0 +1,33 @@
+# Node modules
+**/node_modules
+**/npm-debug.log
+
+# Build artifacts
+**/dist
+**/build
+client-build
+
+# Environment files
+**/.env
+**/.env.local
+**/.env.production
+
+# Git
+**/.git
+**/.gitignore
+
+# IDE
+**/.vscode
+**/.idea
+**/.DS_Store
+
+# Logs
+**/*.log
+
+# Testing
+**/coverage
+**/.nyc_output
+
+# Cache
+**/.eslintcache
+**/.cache

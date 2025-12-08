@@ -1,0 +1,175 @@
+.landing-bonus-cards {
+  width: 100%;
+  padding: 60px 0;
+  position: relative;
+  z-index: 10;
+  margin-top: -180px;
+  isolation: isolate;
+}
+
+.landing-bonus-cards::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(60px + 200px);
+  background: linear-gradient(
+    to top,
+    rgba(9, 9, 9, 1) 0%,
+    rgba(9, 9, 9, 0.6) 40%,
+    rgba(9, 9, 9, 0.1) 80%,
+    rgba(9, 9, 9, 0) 100%
+  );
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.landing-bonus-cards-container {
+  width: 90%;
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 77px;
+  position: relative;
+  z-index: 1;
+}
+
+.landing-bonus-card {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  max-width: 346px;
+  background-color: transparent;
+  padding: 0;
+}
+
+.landing-bonus-card-icon {
+  width: 59px;
+  height: 59px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.landing-bonus-card-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.landing-bonus-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.landing-bonus-card-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1.25em;
+  color: #ffffff;
+  margin: 0;
+}
+
+.landing-bonus-card-description {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1.5em;
+  color: #ffffff;
+  margin: 0;
+}
+
+@media (max-width: 1024px) {
+  .landing-bonus-cards-container {
+    gap: 40px;
+  }
+
+  .landing-bonus-card-title {
+    font-size: 20px;
+  }
+
+  .landing-bonus-card-description {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .landing-bonus-cards {
+    margin-top: -100px;
+    padding: 30px 0 131px 0;
+  }
+
+  .landing-bonus-cards::after {
+    height: calc(131px + 200px);
+  }
+
+  .landing-bonus-cards-container {
+    width: calc(100% - 60px);
+    max-width: 362px;
+    flex-direction: column;
+    gap: 7px;
+    background-color: transparent;
+    padding: 0;
+    margin-top: 40px;
+  }
+
+  .landing-bonus-card {
+    max-width: 100%;
+    background-color: #0d0d0d;
+    border-radius: 16px;
+    padding: 20px 50px;
+    gap: 19px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .landing-bonus-card:nth-child(3)::before {
+    content: '';
+    position: absolute;
+    width: 313px;
+    height: 199px;
+    left: 25px;
+    top: 48px;
+    background: #C8272A;
+    filter: blur(50px);
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .landing-bonus-card-icon,
+  .landing-bonus-card-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .landing-bonus-card-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .landing-bonus-card-content {
+    gap: 0;
+  }
+
+  .landing-bonus-card-title {
+    font-family: 'Onest', 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.2em;
+    letter-spacing: -0.03em;
+  }
+
+  .landing-bonus-card-description {
+    display: none;
+  }
+}
+

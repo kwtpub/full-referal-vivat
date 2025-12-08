@@ -1,0 +1,104 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Agent {
+  id             String  @id @default(cuid())
+  name           String
+  email          String  @unique
+  passwordHash   String
+  isActive       Boolean @default(true)
+  isAdmin        Boolean @default(false)
+  activationLink String  @unique
+
+  clients Client[]
+  deals   Deal[]
+  bonuses Bonus[]
+  tokens  Token[] // 👈 связь "один ко многим" с таблицей токенов
+
+  createdAt DateTime @default(now())
+}
+
+model Client {
+  id    String @id @default(cuid())
+  name  String
+  phone String @unique
+
+  agent   Agent  @relation(fields: [agentId], references: [id])
+  agentId String
+
+  createdAt DateTime @default(now())
+
+  // Один клиент -> много заказов
+  deals Deal[]
+}
+
+model Deal {
+  id String @id @default(cuid())
+
+  client   Client @relation(fields: [clientId], references: [id])
+  clientId String
+
+  agent   Agent  @relation(fields: [agentId], references: [id])
+  agentId String
+
+  // Интерес лодки
+  interestBoat InterestBoat
+  quantity     Int
+
+  // Воронка и статус
+  stage  String
+  status String
+
+  // Ожидает подтверждения админа
+  pendingApproval Boolean @default(false)
+
+  // Деньги
+  amount   Decimal?
+  closedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  bonus Bonus? // Один бонус на сделку
+}
+
+model Bonus {
+  id        String   @id @default(cuid())
+  dealId    String   @unique // Один бонус на одну сделку
+  agentId   String
+  percent   Decimal  // Процент комиссии (3, 5 или 8)
+  amount    Decimal  // Сумма бонуса в рублях
+  createdAt DateTime @default(now())
+
+  deal  Deal  @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  agent Agent @relation(fields: [agentId], references: [id])
+}
+
+model Token {
+  id           String   @id @default(cuid())
+  refreshToken String   @unique @db.VarChar(512)
+  userAgent    String? // например, для хранения info о браузере / устройстве
+  expiresAt    DateTime // дата истечения refresh токена
+  createdAt    DateTime @default(now())
+
+  agent   Agent  @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  agentId String
+}
+
+enum InterestBoat {
+  HardTop
+  ClassicBoat
+  Bowrider
+}

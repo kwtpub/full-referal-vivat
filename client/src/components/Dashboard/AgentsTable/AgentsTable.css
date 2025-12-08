@@ -1,0 +1,131 @@
+.agents-table-header {
+  grid-template-columns: 1fr 120px 120px 150px 120px !important;
+}
+
+.agents-table-row {
+  grid-template-columns: 1fr 120px 120px 150px 120px !important;
+}
+
+.agents-name-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.agents-name {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.4em;
+  color: #FFFFFF;
+}
+
+.agents-email {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.4em;
+  color: #898989;
+}
+
+
+@media (max-width: 1024px) {
+  .agents-table-header {
+    grid-template-columns: 1fr 100px 100px 130px 100px !important;
+    gap: 16px !important;
+  }
+
+  .agents-table-row {
+    grid-template-columns: 1fr 100px 100px 130px 100px !important;
+    gap: 16px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .agents-table-header {
+    grid-template-columns: 1fr 100px 80px !important;
+    gap: 12px !important;
+    padding-bottom: 12px;
+  }
+
+  .agents-table-header .dashboard-clients-table-col {
+    font-size: 11px;
+    display: block !important;
+  }
+
+  /* Скрываем колонки "ПРОДАЖИ" и "БОНУС" */
+  .agents-table-header .dashboard-clients-table-col:nth-child(3),
+  .agents-table-header .dashboard-clients-table-col:nth-child(4) {
+    display: none !important;
+  }
+
+  /* Явно показываем первую колонку (ИМЯ) */
+  .agents-table-header .dashboard-clients-table-col:nth-child(1) {
+    display: block !important;
+  }
+
+  /* Явно показываем вторую колонку (КЛИЕНТЫ) */
+  .agents-table-header .dashboard-clients-table-col:nth-child(2) {
+    display: block !important;
+  }
+
+  /* Явно показываем последнюю колонку (Меню) */
+  .agents-table-header .dashboard-clients-table-col:last-child {
+    display: block !important;
+  }
+
+  .agents-table-row {
+    grid-template-columns: 1fr 100px 80px !important;
+    gap: 12px !important;
+    padding: 12px 0;
+  }
+
+  /* Переопределяем базовые стили - показываем все ячейки по умолчанию */
+  .agents-table-row .dashboard-clients-table-cell {
+    display: flex !important;
+    font-size: 12px;
+    padding: 0;
+    align-items: center;
+  }
+
+  /* Скрываем ячейки "Продажи" и "Бонус" */
+  .agents-table-row .dashboard-clients-table-cell:nth-child(3),
+  .agents-table-row .dashboard-clients-table-cell:nth-child(4) {
+    display: none !important;
+  }
+
+  /* Явно показываем первую ячейку (Имя) */
+  .agents-table-row .dashboard-clients-table-cell:nth-child(1) {
+    display: flex !important;
+    justify-content: flex-start;
+  }
+
+  /* Явно показываем вторую ячейку (Клиенты) */
+  .agents-table-row .dashboard-clients-table-cell:nth-child(2) {
+    display: flex !important;
+    justify-content: flex-start;
+  }
+
+  /* Явно показываем последнюю ячейку (Меню) */
+  .agents-table-row .dashboard-clients-table-cell:last-child {
+    display: flex !important;
+    justify-content: center;
+  }
+
+  .agents-table-row .dashboard-clients-table-cell::before {
+    display: none;
+  }
+
+  .agents-name {
+    font-size: 14px;
+  }
+
+  .agents-email {
+    font-size: 11px;
+  }
+
+  .agents-name-cell {
+    text-align: left;
+  }
+}
+

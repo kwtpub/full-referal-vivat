@@ -1,0 +1,123 @@
+.registration-success-page {
+  width: 100vw;
+  height: 100vh;
+  background-color: #090909;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.registration-success-container {
+  width: 100%;
+  height: 100vh;
+  background-color: #090909;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32px;
+  box-sizing: border-box;
+}
+
+.registration-success-logo {
+  width: 150px;
+  height: 38px;
+  object-fit: contain;
+  position: absolute;
+  top: 29px;
+  right: 32px;
+}
+
+.registration-success-logo-mobile {
+  display: none;
+}
+
+.registration-success-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 308px;
+}
+
+.registration-success-title {
+  font-family: 'Medium', sans-serif;
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 0.9em;
+  color: #ffffff;
+  margin: 0;
+  text-align: center;
+}
+
+.registration-success-title-mobile {
+  display: none;
+}
+
+.registration-success-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.2em;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  margin: 0;
+}
+
+.registration-success-button {
+  position: absolute;
+  bottom: 51px;
+  max-width: 330px;
+}
+
+@media (max-width: 768px) {
+  .registration-success-container {
+    padding: 0 24px;
+    justify-content: space-between;
+    padding-top: 54px;
+    padding-bottom: 30px;
+  }
+
+  .registration-success-logo-desktop {
+    display: none;
+  }
+
+  .registration-success-logo-mobile {
+    display: block;
+    width: 48px;
+    height: 42px;
+    top: 24px;
+    right: 24px;
+  }
+
+  .registration-success-content {
+    margin-bottom: 0;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  .registration-success-title {
+    font-size: 24px;
+    line-height: 1.2967263062795003em;
+    letter-spacing: -0.03em;
+  }
+
+  .registration-success-title-desktop {
+    display: none;
+  }
+
+  .registration-success-title-mobile {
+    display: inline;
+  }
+
+  .registration-success-button {
+    position: static;
+    width: calc(100% - 60px);
+    max-width: 330px;
+    margin: 0 auto;
+  }
+}
+

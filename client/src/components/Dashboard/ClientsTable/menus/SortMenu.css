@@ -1,0 +1,50 @@
+.sort-menu {
+  background: rgb(41, 41, 44);
+  border-top: none;
+  border-radius: 0 0 16px 16px;
+  z-index: 10000;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  gap: 4px;
+}
+
+.sort-menu-item {
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  text-align: left;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.2em;
+  letter-spacing: -0.03em;
+  color: #DBDBDB;
+  cursor: pointer;
+  transition: background-color 0.18s ease;
+  width: 100%;
+}
+
+.sort-menu-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.sort-menu-item:active {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+@media (max-width: 768px) {
+  .sort-menu {
+    border-radius: 12px;
+    padding: 6px;
+  }
+
+  .sort-menu-item {
+    padding: 10px 12px;
+    font-size: 13px;
+    border-radius: 8px;
+  }
+}
+

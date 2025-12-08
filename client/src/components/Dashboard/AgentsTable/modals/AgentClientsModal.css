@@ -1,0 +1,241 @@
+.agent-clients-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.agent-clients-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.agent-clients-modal-content {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 1) 19%, rgba(0, 0, 0, 0.8) 100%);
+  backdrop-filter: blur(40px);
+  border-radius: 32px;
+  padding: 32px;
+  width: 100%;
+  max-width: 1100px;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+.agent-clients-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-shrink: 0;
+}
+
+.agent-clients-modal-title {
+  font-family: 'MEDIUM', sans-serif;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.2em;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.agent-clients-modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  transition: opacity 0.2s;
+  border-radius: 8px;
+}
+
+.agent-clients-modal-close:hover {
+  opacity: 0.7;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.agent-clients-modal-body {
+  min-height: 200px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.agent-clients-modal-loading,
+.agent-clients-modal-error,
+.agent-clients-modal-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  color: #898989;
+}
+
+.agent-clients-modal-error {
+  color: #F52525;
+}
+
+.agent-clients-table-wrapper {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: calc(90vh - 120px);
+}
+
+.agent-clients-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 700px;
+}
+
+.agent-clients-table-header {
+  display: grid;
+  grid-template-columns: 80px 120px 150px 90px 110px 1fr 50px;
+  gap: 12px;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(137, 137, 137, 0.3);
+}
+
+.agent-clients-table-col {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 1.4em;
+  color: #898989;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.agent-clients-table-row {
+  display: grid;
+  grid-template-columns: 80px 120px 150px 90px 110px 1fr 50px;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(137, 137, 137, 0.3);
+}
+
+.agent-clients-table-row:last-child {
+  border-bottom: none;
+}
+
+.agent-clients-table-cell {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.4em;
+  color: #DBDBDB;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.agent-clients-table-cell-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.agent-clients-edit-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #898989;
+  transition: color 0.2s, background 0.2s;
+  border-radius: 8px;
+}
+
+.agent-clients-edit-btn:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+  .agent-clients-modal {
+    padding: 0;
+    align-items: flex-start;
+  }
+
+  .agent-clients-modal-content {
+    padding: 16px 0 0;
+    border-radius: 0;
+    max-width: 100%;
+    max-height: 100vh;
+    height: 100vh;
+  }
+
+  .agent-clients-modal-header {
+    margin-bottom: 12px;
+    padding: 0 16px;
+  }
+
+  .agent-clients-modal-title {
+    font-size: 16px;
+  }
+
+  .agent-clients-modal-body {
+    padding: 0;
+  }
+
+  .agent-clients-table-wrapper {
+    max-height: calc(100vh - 70px);
+    padding: 0 16px 16px;
+  }
+
+  .agent-clients-table {
+    min-width: 650px;
+  }
+
+  .agent-clients-table-header {
+    grid-template-columns: 60px 100px 130px 70px 90px 1fr 40px;
+    gap: 8px;
+    padding-bottom: 12px;
+  }
+
+  .agent-clients-table-col {
+    font-size: 10px;
+  }
+
+  .agent-clients-table-row {
+    grid-template-columns: 60px 100px 130px 70px 90px 1fr 40px;
+    gap: 8px;
+    padding: 12px 0;
+  }
+
+  .agent-clients-table-cell {
+    font-size: 12px;
+  }
+
+  .agent-clients-edit-btn {
+    padding: 6px;
+  }
+
+  .agent-clients-edit-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+

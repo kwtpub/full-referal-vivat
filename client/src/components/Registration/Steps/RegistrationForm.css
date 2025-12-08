@@ -1,0 +1,226 @@
+.registration-page {
+  width: 100vw;
+  height: 100vh;
+  background-color: #090909;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.registration-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #090909;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 29px;
+  padding-bottom: 100px;
+}
+
+.registration-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 32px;
+  margin-top: 30px;
+  margin-bottom: 103px;
+  box-sizing: border-box;
+}
+
+.registration-logo {
+  width: 150px;
+  height: 38px;
+  object-fit: contain;
+}
+
+.registration-logo-mobile {
+  display: none;
+}
+
+
+.registration-title {
+  font-family: 'Medium', sans-serif;
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 0.9em;
+  color: #ffffff;
+  margin: 0 0 88px 0;
+  text-align: center;
+  width: 423px;
+}
+
+.registration-title-mobile {
+  display: none;
+}
+
+.registration-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 423px;
+  margin-bottom: 48px;
+}
+
+.registration-server-error {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.3em;
+  letter-spacing: -0.03em;
+  color: #ff2854;
+  text-align: center;
+  margin-bottom: 16px;
+  width: 100%;
+  max-width: 423px;
+}
+
+.registration-submit-button {
+  max-width: 330px;
+  margin-bottom: 8px;
+  margin-top: 10px;
+}
+
+.registration-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.registration-switch-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 0;
+}
+
+.registration-switch-text-normal {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.2em;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.registration-switch-link {
+  background: none;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.2em;
+  letter-spacing: -0.02em;
+  color: #cc2929;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.2s;
+}
+
+.registration-switch-link:hover {
+  opacity: 0.8;
+}
+
+.registration-agreement-text {
+  width: 330px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 1.3em;
+  letter-spacing: -0.03em;
+  color: #bebec0;
+  text-align: center;
+  margin: 0;
+}
+
+
+@media (max-width: 768px) {
+  .registration-container {
+    height: 100vh;
+    min-height: auto;
+    padding-top: 0;
+    padding-bottom: 0;
+    justify-content: space-between;
+  }
+
+  .registration-header {
+    padding: 0 24px;
+    margin-top: 24px;
+    margin-bottom: 36px;
+  }
+
+  .registration-logo-desktop {
+    display: none;
+  }
+
+  .registration-logo-mobile {
+    display: block;
+    width: 48px;
+    height: 42px;
+  }
+
+  .registration-title {
+    font-size: 24px;
+    line-height: 1.2967263062795003em;
+    letter-spacing: -0.03em;
+    width: auto;
+    max-width: 330px;
+    text-align: left;
+  }
+
+  .registration-title-desktop {
+    display: none;
+  }
+
+  .registration-title-mobile {
+    display: inline;
+  }
+
+  .registration-form {
+    width: calc(100% - 60px);
+    max-width: 330px;
+    margin: 0 auto 24px;
+    box-sizing: border-box;
+  }
+
+  .registration-bottom {
+    margin-top: auto;
+    width: 100%;
+    padding-bottom: 30px;
+  }
+
+  .registration-submit-button {
+    
+    width: calc(100% - 60px);
+    max-width: 330px;
+    margin: 0 auto 8px;
+    margin-top: 10px;
+
+    box-sizing: border-box;
+  }
+
+  .registration-agreement-text {
+    width: calc(100% - 60px);
+    max-width: 330px;
+    margin: 0 auto;
+  }
+
+  .registration-switch-text {
+    width: calc(100% - 60px);
+    max-width: 330px;
+  }
+
+  .registration-server-error {
+    width: calc(100% - 60px);
+    max-width: 330px;
+  }
+}
+

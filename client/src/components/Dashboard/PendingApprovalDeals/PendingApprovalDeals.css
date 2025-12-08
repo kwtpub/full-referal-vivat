@@ -1,0 +1,197 @@
+.pending-approval-section {
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+.pending-approval-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.2em;
+  color: #FFFFFF;
+  margin: 0 0 16px 0;
+}
+
+.pending-approval-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.pending-approval-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.18s ease;
+}
+
+.pending-approval-item:first-child {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pending-approval-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.pending-approval-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pending-approval-item-main {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.pending-approval-client-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.pending-approval-client-phone {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #D1D1D1;
+}
+
+.pending-approval-item-details {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.pending-approval-boat,
+.pending-approval-status {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #949494;
+}
+
+.pending-approval-item-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.pending-approval-btn {
+  padding: 8px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+
+.pending-approval-btn-approve:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.pending-approval-btn-reject:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+@media (max-width: 768px) {
+  .pending-approval-title {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .pending-approval-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 12px 16px;
+  }
+
+  .pending-approval-item-main {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .pending-approval-client-name {
+    font-size: 15px;
+  }
+
+  .pending-approval-client-phone {
+    font-size: 13px;
+  }
+
+  .pending-approval-item-details {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .pending-approval-boat,
+  .pending-approval-status {
+    font-size: 11px;
+  }
+
+  .pending-approval-item-actions {
+    width: 100%;
+  }
+
+  .pending-approval-btn {
+    flex: 1;
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pending-approval-section {
+    margin-bottom: 24px;
+  }
+
+  .pending-approval-title {
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+
+  .pending-approval-item {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .pending-approval-client-name {
+    font-size: 14px;
+  }
+
+  .pending-approval-client-phone {
+    font-size: 12px;
+  }
+
+  .pending-approval-boat,
+  .pending-approval-status {
+    font-size: 10px;
+  }
+
+  .pending-approval-item-actions {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .pending-approval-btn {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+}
+

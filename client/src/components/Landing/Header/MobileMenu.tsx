@@ -1,0 +1,66 @@
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '../../ui';
+import './MobileMenu.css';
+
+interface MobileMenuProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onRegisterClick: () => void;
+}
+
+const MobileMenu = ({ isOpen, onClose, onRegisterClick }: MobileMenuProps) => {
+  const navigate = useNavigate();
+
+  const handleNavClick = (path?: string) => {
+    onClose();
+    if (path) {
+      navigate(path);
+    }
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
+  return (
+    <div className={`mobile-menu ${isOpen ? 'mobile-menu-open' : ''}`}>
+      <div className="mobile-menu-overlay" onClick={onClose}></div>
+      <div className="mobile-menu-content">
+        <nav className="mobile-menu-nav">
+
+          <button 
+            onClick={() => handleNavClick('/dashboard')} 
+            className="mobile-menu-link"
+          >
+            Вход
+          </button>
+          <button 
+            onClick={() => handleNavClick('/#about')} 
+            className="mobile-menu-link"
+          >
+            О нас
+          </button>
+          <a 
+            href="#contacts" 
+            className="mobile-menu-link"
+            onClick={() => handleNavClick()}
+          >
+            Контакты
+          </a>
+        </nav>
+      </div>
+    </div>
+  );
+};
+
+export default MobileMenu;
+

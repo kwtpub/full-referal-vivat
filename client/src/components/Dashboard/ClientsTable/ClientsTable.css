@@ -1,0 +1,21 @@
+.dashboard-clients-loading,
+.dashboard-clients-error {
+  padding: 40px;
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  color: #DBDBDB;
+}
+
+.dashboard-clients-error {
+  color: #F52525;
+}
+
+.dashboard-clients-empty {
+  padding: 40px;
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  color: #898989;
+}
+
