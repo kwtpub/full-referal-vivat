@@ -199,3 +199,4 @@ docker compose exec server curl http://localhost:3000/api/health
 ```
 
 4. Создайте issue с полными логами и конфигурацией
+

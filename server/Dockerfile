@@ -25,8 +25,13 @@ COPY package*.json ./
 RUN npm ci --omit=dev
 
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/src/generated ./src/generated
 COPY --from=builder /app/prisma ./prisma
+
+# Регенерируем Prisma клиент в финальном контейнере
+RUN npx prisma generate
+
+# Копируем сгенерированный Prisma клиент в dist/generated
+RUN cp -r /app/src/generated /app/dist/
 
 EXPOSE 3000
 
