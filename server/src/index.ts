@@ -41,7 +41,7 @@ app.use(
       // Логируем для отладки
       console.log('CORS blocked origin:', origin);
       console.log('Allowed origins:', allowedOrigins);
-      
+
       return callback(new Error('Not allowed by CORS'));
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],

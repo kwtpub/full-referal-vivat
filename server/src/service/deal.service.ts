@@ -2,6 +2,7 @@ import { ApiError } from "../exceptions/error-api.js";
 import { DealModel, InterestBoat, Stage, Status, calculateDealAmount, BOAT_PRICES } from "../models/deal.model.js";
 import { TokenService } from "./token.service.js";
 import { BonusService } from "./bonus.service.js";
+import { ClientModel } from "../models/client.model.js";
 
 
 export class DealService {
@@ -21,6 +22,12 @@ export class DealService {
     const agentId = (agentData as { id: string }).id;
     if (!agentId) {
       throw ApiError.BadRequest(400, 'Неверный формат токена');
+    }
+
+    // Проверяем существование клиента перед созданием сделки
+    const client = await ClientModel.findById(clientId);
+    if (!client) {
+      throw ApiError.BadRequest(404, 'Клиент не найден');
     }
 
     // Автоматически рассчитываем сумму сделки на основе лодки и количества
