@@ -67,13 +67,13 @@ export class BonusModel {
   }
 
   /**
-   * Подсчитать количество закрытых сделок агента
+   * Подсчитать количество закрытых И ПОДТВЕРЖДЕННЫХ сделок агента
+   * Считаем только те сделки, за которые уже начислен бонус
    */
   public static async getClosedDealsCount(agentId: string) {
-    return prisma.deal.count({
+    return prisma.bonus.count({
       where: {
         agentId,
-        stage: "Закрыто",
       },
     });
   }

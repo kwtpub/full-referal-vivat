@@ -4,14 +4,16 @@ import { TokenService } from "./token.service.js";
 
 /**
  * Прогрессивная шкала бонусов:
- * 0 продаж - 3%
- * 3 продажи - 5%
- * 8 продаж - 8%
+ * 0 продаж - 2%
+ * 3 продажи - 3%
+ * 8 продаж - 4%
+ * 15 продаж - 5.5%
  */
 const BONUS_TIERS = [
-  { minSales: 8, percent: 8 },
-  { minSales: 3, percent: 5 },
-  { minSales: 0, percent: 3 },
+  { minSales: 15, percent: 5.5 },
+  { minSales: 8, percent: 4 },
+  { minSales: 3, percent: 3 },
+  { minSales: 0, percent: 2 },
 ];
 
 export class BonusService {
@@ -24,7 +26,7 @@ export class BonusService {
         return tier.percent;
       }
     }
-    return 3; // По умолчанию 3%
+    return 2; // По умолчанию 2%
   }
 
   /**
