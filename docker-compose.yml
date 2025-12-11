@@ -83,7 +83,9 @@ services:
 volumes:
   db_data:
   certbot_data:
+    description: Хранение сертификатов Let's Encrypt (Certificate is saved at: /etc/letsencrypt/)
   certbot_www:
+    description: Временные файлы для ACME challenge
 
 networks:
   app-network:

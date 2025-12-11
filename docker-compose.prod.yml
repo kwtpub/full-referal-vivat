@@ -62,11 +62,17 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
       - ./client-build:/usr/share/nginx/html:ro
+      - certbot_data:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
     networks:
       - app-network
 
 volumes:
   db_data:
+  certbot_data:
+    description: Хранение сертификатов Let's Encrypt (Certificate is saved at: /etc/letsencrypt/)
+  certbot_www:
+    description: Временные файлы для ACME challenge
 
 networks:
   app-network:
