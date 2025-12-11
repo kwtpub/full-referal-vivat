@@ -75,11 +75,15 @@ services:
     volumes:
       - ./nginx/nginx-simple.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
+      - certbot_data:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
     networks:
       - app-network
 
 volumes:
   db_data:
+  certbot_data:
+  certbot_www:
 
 networks:
   app-network:

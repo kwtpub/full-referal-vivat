@@ -1,0 +1,1058 @@
+openapi: 3.0.3
+info:
+  title: Bandboats API
+  description: API для реферальной системы управления агентами, клиентами и сделками
+  version: 1.0.0
+  contact:
+    name: Bandboats Support
+
+servers:
+  - url: http://localhost:3000/api
+    description: Локальный сервер разработки
+  - url: https://api.bandboats.com/api
+    description: Продакшн сервер
+
+tags:
+  - name: Authentication
+    description: Аутентификация и авторизация агентов
+  - name: Agents
+    description: Управление агентами
+  - name: Clients
+    description: Управление клиентами
+  - name: Deals
+    description: Управление сделками
+  - name: Bonuses
+    description: Система бонусов
+
+paths:
+  # ==================== Аутентификация ====================
+  /registration:
+    post:
+      tags:
+        - Authentication
+      summary: Регистрация нового агента
+      description: Создание нового аккаунта агента. После регистрации требуется активация через email.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+              properties:
+                name:
+                  type: string
+                  minLength: 3
+                  maxLength: 25
+                  example: "Иван Иванов"
+                  description: Имя агента
+                email:
+                  type: string
+                  format: email
+                  example: "ivan@example.com"
+                  description: Email агента (должен быть уникальным)
+                password:
+                  type: string
+                  minLength: 8
+                  maxLength: 25
+                  example: "password123"
+                  description: Пароль агента
+      responses:
+        '200':
+          description: Успешная регистрация
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: "refreshToken=xxx; HttpOnly; Max-Age=2592000"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: Пользователь с таким email уже существует
+
+  /login:
+    post:
+      tags:
+        - Authentication
+      summary: Вход в систему
+      description: Аутентификация агента по email и паролю
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "ivan@example.com"
+                password:
+                  type: string
+                  example: "password123"
+                name:
+                  type: string
+                  example: "Иван Иванов"
+                  description: Опциональное имя (необязательно)
+      responses:
+        '200':
+          description: Успешный вход
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: "refreshToken=xxx; HttpOnly; Max-Age=2592000"
+        '401':
+          description: Неверный email или пароль
+
+  /logout:
+    post:
+      tags:
+        - Authentication
+      summary: Выход из системы
+      description: Завершение сессии агента и удаление refresh token
+      responses:
+        '200':
+          description: Успешный выход
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Выход выполнен успешно"
+        '400':
+          description: Refresh token отсутствует
+
+  /activate/{link}:
+    get:
+      tags:
+        - Authentication
+      summary: Активация аккаунта
+      description: Активация аккаунта агента по ссылке из email
+      parameters:
+        - name: link
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+      responses:
+        '200':
+          description: Профиль успешно активирован
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Профиль активирован"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /refresh:
+    get:
+      tags:
+        - Authentication
+      summary: Обновление токена доступа
+      description: Получение новой пары access/refresh токенов по refresh token из cookies
+      responses:
+        '200':
+          description: Токены успешно обновлены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: "refreshToken=xxx; HttpOnly; Max-Age=2592000"
+        '401':
+          description: Refresh token отсутствует или недействителен
+
+  # ==================== Агенты ====================
+  /agents:
+    get:
+      tags:
+        - Agents
+      summary: Получить всех агентов
+      description: Получение списка всех агентов (требуется аутентификация)
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Список агентов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Agent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /agents/{id}:
+    patch:
+      tags:
+        - Agents
+      summary: Обновить агента
+      description: Обновление информации об агенте (требуется аутентификация)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "clx1234567890"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+              properties:
+                name:
+                  type: string
+                  example: "Иван Иванов"
+                email:
+                  type: string
+                  format: email
+                  example: "ivan@example.com"
+                isActive:
+                  type: boolean
+                  example: true
+                  description: Статус активности агента
+      responses:
+        '200':
+          description: Агент успешно обновлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Agent'
+        '400':
+          description: Имя и email обязательны
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /agents/stats:
+    get:
+      tags:
+        - Agents
+      summary: Получить статистику всех агентов
+      description: Получение статистики по всем агентам с количеством клиентов и сделок (требуется аутентификация)
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Статистика агентов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AgentWithStats'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /agents/stats/total:
+    get:
+      tags:
+        - Agents
+      summary: Получить общую статистику
+      description: Получение общей статистики по всем агентам (требуется аутентификация)
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Общая статистика
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TotalStats'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /agents/{agentId}/stats:
+    get:
+      tags:
+        - Agents
+      summary: Получить статистику конкретного агента
+      description: Получение статистики по конкретному агенту (требуется аутентификация)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "clx1234567890"
+      responses:
+        '200':
+          description: Статистика агента
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentStats'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ==================== Клиенты ====================
+  /client:
+    post:
+      tags:
+        - Clients
+      summary: Создать клиента
+      description: Создание нового клиента. Привязывается к агенту по refresh token из cookies.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - phone
+              properties:
+                name:
+                  type: string
+                  example: "Петр Петров"
+                  description: Имя клиента
+                phone:
+                  type: string
+                  example: "+79001234567"
+                  description: Телефон клиента (должен быть уникальным)
+      responses:
+        '200':
+          description: Клиент успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: Клиент с таким номером уже существует
+        '404':
+          description: Агент не найден
+
+  /clients:
+    get:
+      tags:
+        - Clients
+      summary: Получить всех клиентов
+      description: Получение списка всех клиентов
+      responses:
+        '200':
+          description: Список клиентов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Client'
+
+  /clients/{id}:
+    get:
+      tags:
+        - Clients
+      summary: Получить клиентов агента
+      description: Получение списка клиентов конкретного агента
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "clx1234567890"
+          description: ID агента
+      responses:
+        '200':
+          description: Список клиентов агента
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Client'
+
+  /client/find:
+    get:
+      tags:
+        - Clients
+      summary: Найти клиента по телефону
+      description: Поиск клиента по номеру телефона
+      parameters:
+        - name: phone
+          in: query
+          required: true
+          schema:
+            type: string
+          example: "+79001234567"
+      responses:
+        '200':
+          description: Клиент найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        '400':
+          description: Телефон обязателен
+        '404':
+          description: Клиент не найден
+
+  /client/{id}:
+    patch:
+      tags:
+        - Clients
+      summary: Обновить клиента
+      description: Обновление информации о клиенте
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "clx1234567890"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Петр Петров"
+                phone:
+                  type: string
+                  example: "+79001234567"
+      responses:
+        '200':
+          description: Клиент успешно обновлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+    delete:
+      tags:
+        - Clients
+      summary: Удалить клиента
+      description: Удаление клиента. Требуется передать phone в body.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "clx1234567890"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phone
+              properties:
+                phone:
+                  type: string
+                  example: "+79001234567"
+      responses:
+        '200':
+          description: Клиент успешно удален
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        '400':
+          description: Пользователя не существует
+
+  # ==================== Сделки ====================
+  /deal/{clientId}:
+    post:
+      tags:
+        - Deals
+      summary: Создать сделку
+      description: Создание новой сделки для клиента. Привязывается к агенту по refresh token из cookies.
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "clx1234567890"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - interestBoat
+                - quantity
+                - stage
+                - status
+              properties:
+                interestBoat:
+                  type: string
+                  example: "Катер на 4 человека"
+                  description: Интерес к лодке (свободное текстовое поле)
+                quantity:
+                  type: integer
+                  example: 1
+                  description: Количество
+                stage:
+                  type: string
+                  enum: [Закрыто, Открыто, Согласование]
+                  example: "Открыто"
+                  description: Стадия сделки
+                status:
+                  type: string
+                  enum: [Холодный, Средний, Горячий]
+                  example: "Горячий"
+                  description: Статус сделки
+      responses:
+        '200':
+          description: Сделка успешно создана
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /deal/{id}:
+    get:
+      tags:
+        - Deals
+      summary: Получить сделку по ID
+      description: Получение информации о конкретной сделке
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "clx1234567890"
+      responses:
+        '200':
+          description: Информация о сделке
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DealWithRelations'
+
+    patch:
+      tags:
+        - Deals
+      summary: Обновить сделку
+      description: Обновление информации о сделке
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "clx1234567890"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                interestBoat:
+                  type: string
+                  example: "Катер на 4 человека"
+                quantity:
+                  type: integer
+                  example: 1
+                stage:
+                  type: string
+                  enum: [Закрыто, Открыто, Согласование]
+                  example: "Закрыто"
+                status:
+                  type: string
+                  enum: [Холодный, Средний, Горячий]
+                  example: "Горячий"
+      responses:
+        '200':
+          description: Сделка успешно обновлена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+    delete:
+      tags:
+        - Deals
+      summary: Удалить сделку
+      description: Удаление сделки
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "clx1234567890"
+      responses:
+        '200':
+          description: Сделка успешно удалена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /deal/{id}/approve:
+    post:
+      tags:
+        - Deals
+      summary: Подтвердить сделку (только для админов)
+      description: Подтверждение сделки админом. Устанавливает pendingApproval=false и closedAt=текущее время. Требуется аутентификация.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "clx1234567890"
+      responses:
+        '200':
+          description: Сделка успешно подтверждена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deal'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Доступ запрещен (только для админов)
+
+  /deal/{id}/reject:
+    post:
+      tags:
+        - Deals
+      summary: Отклонить сделку (только для админов)
+      description: Отклонение сделки админом. Устанавливает pendingApproval=false и stage="Открыто". Требуется аутентификация.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "clx1234567890"
+      responses:
+        '200':
+          description: Сделка успешно отклонена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deal'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: Доступ запрещен (только для админов)
+
+  /deals:
+    get:
+      tags:
+        - Deals
+      summary: Получить все сделки
+      description: Получение всех сделок текущего агента (определяется по refresh token из cookies)
+      responses:
+        '200':
+          description: Список сделок
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Deal'
+
+  /deals/client/{clientId}:
+    get:
+      tags:
+        - Deals
+      summary: Получить сделки клиента
+      description: Получение всех сделок конкретного клиента
+      parameters:
+        - name: clientId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "clx1234567890"
+      responses:
+        '200':
+          description: Список сделок клиента
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DealWithAgent'
+
+  /deals/agent/{agentId}:
+    get:
+      tags:
+        - Deals
+      summary: Получить сделки агента
+      description: Получение всех сделок конкретного агента
+      parameters:
+        - name: agentId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "clx1234567890"
+      responses:
+        '200':
+          description: Список сделок агента
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DealWithClient'
+
+  # ==================== Бонусы ====================
+  /bonuses:
+    get:
+      tags:
+        - Bonuses
+      summary: Получить все бонусы агента
+      description: Получение всех бонусов текущего агента (определяется по refresh token из cookies)
+      responses:
+        '200':
+          description: Список бонусов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Bonus'
+        '401':
+          description: Токен устарел
+
+  /bonuses/stats:
+    get:
+      tags:
+        - Bonuses
+      summary: Получить статистику бонусов агента
+      description: Получение статистики бонусов текущего агента - количество закрытых сделок, текущий процент, общая сумма бонусов, следующий уровень (определяется по refresh token из cookies)
+      responses:
+        '200':
+          description: Статистика бонусов
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BonusStats'
+        '401':
+          description: Токен устарел
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT токен доступа (access token)
+
+  schemas:
+    Agent:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "clx1234567890"
+        name:
+          type: string
+          example: "Иван Иванов"
+        email:
+          type: string
+          format: email
+          example: "ivan@example.com"
+        isActivated:
+          type: boolean
+          example: true
+          description: Статус активации аккаунта
+        isAdmin:
+          type: boolean
+          example: false
+          description: Является ли агент администратором
+
+    AuthResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          description: JWT токен доступа
+        refreshToken:
+          type: string
+          example: "xxx-refresh-token-xxx"
+          description: Refresh токен (также устанавливается в cookie)
+        agent:
+          $ref: '#/components/schemas/Agent'
+
+    AgentWithStats:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/Agent'
+        - type: object
+          properties:
+            clientsCount:
+              type: integer
+              example: 15
+              description: Количество клиентов
+            dealsCount:
+              type: integer
+              example: 25
+              description: Количество сделок
+
+    AgentStats:
+      type: object
+      properties:
+        clientsCount:
+          type: integer
+          example: 15
+        dealsCount:
+          type: integer
+          example: 25
+        closedDealsCount:
+          type: integer
+          example: 10
+
+    TotalStats:
+      type: object
+      properties:
+        totalAgents:
+          type: integer
+          example: 10
+        totalClients:
+          type: integer
+          example: 150
+        totalDeals:
+          type: integer
+          example: 250
+
+    Client:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "clx1234567890"
+        name:
+          type: string
+          example: "Петр Петров"
+        phone:
+          type: string
+          example: "+79001234567"
+        agentId:
+          type: string
+          example: "clx1234567890"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+
+    Deal:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "clx1234567890"
+        clientId:
+          type: string
+          example: "clx1234567890"
+        agentId:
+          type: string
+          example: "clx1234567890"
+        interestBoat:
+          type: string
+          example: "Катер на 4 человека"
+          description: Интерес к лодке (свободное текстовое поле)
+        quantity:
+          type: integer
+          example: 1
+        stage:
+          type: string
+          enum: [Закрыто, Открыто, Согласование]
+          example: "Открыто"
+        status:
+          type: string
+          enum: [Холодный, Средний, Горячий]
+          example: "Горячий"
+        pendingApproval:
+          type: boolean
+          example: false
+          description: Ожидает подтверждения админа
+        amount:
+          type: number
+          format: decimal
+          nullable: true
+          example: 1500000.00
+          description: Сумма сделки в рублях
+        closedAt:
+          type: string
+          format: date-time
+          nullable: true
+          example: "2024-01-15T10:30:00Z"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+
+    DealWithRelations:
+      allOf:
+        - $ref: '#/components/schemas/Deal'
+        - type: object
+          properties:
+            client:
+              $ref: '#/components/schemas/Client'
+            agent:
+              type: object
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
+                email:
+                  type: string
+
+    DealWithClient:
+      allOf:
+        - $ref: '#/components/schemas/Deal'
+        - type: object
+          properties:
+            client:
+              $ref: '#/components/schemas/Client'
+
+    DealWithAgent:
+      allOf:
+        - $ref: '#/components/schemas/Deal'
+        - type: object
+          properties:
+            agent:
+              type: object
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
+                email:
+                  type: string
+
+    Bonus:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "clx1234567890"
+        dealId:
+          type: string
+          example: "clx1234567890"
+          description: ID сделки, за которую начислен бонус
+        agentId:
+          type: string
+          example: "clx1234567890"
+        percent:
+          type: number
+          format: decimal
+          example: 5.5
+          description: Процент комиссии (2, 3, 4 или 5.5)
+        amount:
+          type: number
+          format: decimal
+          example: 82500.00
+          description: Сумма бонуса в рублях
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+
+    BonusStats:
+      type: object
+      properties:
+        closedDealsCount:
+          type: integer
+          example: 10
+          description: Количество закрытых сделок агента
+        currentPercent:
+          type: number
+          format: decimal
+          example: 3.0
+          description: Текущий процент бонуса
+        totalBonuses:
+          type: number
+          format: decimal
+          example: 150000.00
+          description: Общая сумма всех бонусов в рублях
+        nextTier:
+          type: object
+          nullable: true
+          properties:
+            salesNeeded:
+              type: integer
+              example: 5
+              description: Сколько еще продаж нужно до следующего уровня
+            nextPercent:
+              type: number
+              format: decimal
+              example: 4.0
+              description: Процент следующего уровня
+          description: Информация о следующем уровне (null, если уже максимальный уровень)
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Ошибка валидации: поле name обязательно"
+
+  responses:
+    BadRequest:
+      description: Ошибка валидации или некорректный запрос
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Unauthorized:
+      description: Требуется аутентификация или токен недействителен
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
