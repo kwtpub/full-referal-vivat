@@ -18,3 +18,9 @@ nginx/ssl/*
 client-build/
 dist/
 node_modules/
+
+README.md
+
+to-do.ts
+
+to-do.md

@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { createPortal } from 'react-dom';
 import { Button, Input, Checkbox } from '../../../ui';
 import ClientService from '../../../../service/ClientService';
 import DealService, { type InterestBoat, type Status, type Stage } from '../../../../service/DealService';
+import { Context } from '../../../../main';
 import type { Deal } from '../ClientsTable';
 import './EditClientModal.css';
 
@@ -14,6 +15,9 @@ interface EditClientModalProps {
 }
 
 const EditClientModal = ({ isOpen, onClose, onSuccess, deal }: EditClientModalProps) => {
+  const { store } = useContext(Context);
+  const isAdmin = store.user.isAdmin || false;
+  
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [selectedBoats, setSelectedBoats] = useState<InterestBoat[]>([]);
@@ -313,7 +317,7 @@ const EditClientModal = ({ isOpen, onClose, onSuccess, deal }: EditClientModalPr
                     onChange={(e) => {
                       setSelectedStatus(e.target.checked ? status.value : '');
                     }}
-                    disabled={isLoading}
+                    disabled={isLoading || !isAdmin}
                   />
                 ))}
               </div>
