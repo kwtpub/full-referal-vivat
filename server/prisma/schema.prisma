@@ -54,8 +54,8 @@ model Deal {
   agent   Agent  @relation(fields: [agentId], references: [id])
   agentId String
 
-  // Интерес лодки
-  interestBoat InterestBoat
+  // Интерес лодки (свободное текстовое поле)
+  interestBoat String
   quantity     Int
 
   // Воронка и статус
@@ -95,10 +95,4 @@ model Token {
 
   agent   Agent  @relation(fields: [agentId], references: [id], onDelete: Cascade)
   agentId String
-}
-
-enum InterestBoat {
-  HardTop
-  ClassicBoat
-  Bowrider
 }

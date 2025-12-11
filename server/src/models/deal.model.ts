@@ -1,36 +1,18 @@
 import { prisma } from "../prisma.singleton.js";
 
-export type InterestBoat = "HardTop" | "ClassicBoat" | "Bowrider";
 export type Status = "Холодный" | "Средний" | "Горячий";
 export type Stage = "Закрыто" | "Открыто" | "Согласование";
-
-// Стоимость каждого типа лодки в рублях
-export const BOAT_PRICES: Record<InterestBoat, number> = {
-  HardTop: 5500000,      // 5.5 млн ₽
-  ClassicBoat: 3200000,  // 3.2 млн ₽
-  Bowrider: 4100000,     // 4.1 млн ₽
-};
-
-// Получить стоимость лодки
-export function getBoatPrice(boat: InterestBoat): number {
-  return BOAT_PRICES[boat] || 0;
-}
-
-// Рассчитать общую сумму сделки (цена * количество)
-export function calculateDealAmount(boat: InterestBoat, quantity: number): number {
-  return getBoatPrice(boat) * quantity;
-}
 
 export class DealModel {
   
   public static async create(
     clientId: string,
     agentId: string,
-    interestBoat: InterestBoat,
+    interestBoat: string,
     quantity: number,
     stage: Stage,
     status: Status,
-    amount: number,
+    amount: number | null,
     pendingApproval: boolean = false,
   ) {
     return prisma.deal.create({
@@ -57,11 +39,11 @@ export class DealModel {
 
   public static async update(
     id: string,
-    interestBoat: InterestBoat,
+    interestBoat: string,
     quantity: number,
     stage: Stage,
     status: Status,
-    amount: number,
+    amount: number | null,
     pendingApproval: boolean,
   ) {
     return prisma.deal.update({

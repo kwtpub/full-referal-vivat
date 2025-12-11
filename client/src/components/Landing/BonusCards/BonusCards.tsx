@@ -4,7 +4,7 @@ const BonusCards = () => {
   const cards = [
     {
       icon: '/images/Home.svg',
-      title: 'ЗАРАБАТЫВАЙ С ДИВАНА',
+      title: 'РАБОТАЙ ИЗ ЛЮБОЙ ТОЧКИ МИРА',
       description: 'We turn ideas into clean, functional digital products.',
     },
     {
@@ -14,7 +14,7 @@ const BonusCards = () => {
     },
     {
       icon: '/images/Checkcircle.svg',
-      title: 'ПРОВЕРЕННЫЕ СИСТЕМЫ CRM',
+      title: 'ПОЛНЫЙ КОНТРОЛЬ СВОИХ КЛИЕНТОВ',
       description: 'We turn ideas into clean, functional digital products.',
     },
   ];

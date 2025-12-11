@@ -1,15 +1,11 @@
 import $api from '../http';
 import type { AuthResponse } from '../models/response/AuthResponse';
 
-export type InterestBoat = 'HardTop' | 'ClassicBoat' | 'Bowrider';
 export type Status = 'Холодный' | 'Средний' | 'Горячий';
 export type Stage = 'Закрыто' | 'Открыто' | 'Согласование';
 
-// Цены на лодки (будут загружаться с сервера)
-export type BoatPrices = Record<InterestBoat, number>;
-
 export interface DealCreateData {
-  interestBoat: InterestBoat;
+  interestBoat: string;
   quantity: number;
   stage: Stage;
   status: Status;
@@ -42,10 +38,6 @@ export default class DealService {
 
   static async getDealById(id: string) {
     return $api.get<AuthResponse>(`/deal/${id}`);
-  }
-
-  static async getBoatPrices() {
-    return $api.get<BoatPrices>('/boats/prices');
   }
 
   static async approveDeal(id: string) {

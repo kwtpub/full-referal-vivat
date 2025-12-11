@@ -1,5 +1,5 @@
 import { ApiError } from "../exceptions/error-api.js";
-import { DealModel, InterestBoat, Stage, Status, calculateDealAmount, BOAT_PRICES } from "../models/deal.model.js";
+import { DealModel, Stage, Status } from "../models/deal.model.js";
 import { TokenService } from "./token.service.js";
 import { BonusService } from "./bonus.service.js";
 import { ClientModel } from "../models/client.model.js";
@@ -10,7 +10,7 @@ export class DealService {
 
   public static async create(clientId: string, 
     refreshToken: string, 
-    interestBoat: InterestBoat, 
+    interestBoat: string, 
     quantity: number, 
     stage: Stage, 
     status: Status) {
@@ -30,8 +30,8 @@ export class DealService {
       throw ApiError.BadRequest(404, 'Клиент не найден');
     }
 
-    // Автоматически рассчитываем сумму сделки на основе лодки и количества
-    const amount = calculateDealAmount(interestBoat, quantity);
+    // Сумма сделки может быть задана вручную или оставлена null
+    const amount = null;
 
     // Если сделка закрыта - устанавливаем pendingApproval = true
     const pendingApproval = stage === 'Закрыто';
@@ -60,7 +60,7 @@ export class DealService {
   public static async update(
     id: string,
     refreshToken: string,
-    interestBoat: InterestBoat,
+    interestBoat: string,
     quantity: number,
     stage: Stage,
     status: Status,
@@ -81,8 +81,8 @@ export class DealService {
       const wasOpen = currentDeal.stage !== 'Закрыто';
       const willBeClosed = stage === 'Закрыто';
       
-      // Автоматически пересчитываем сумму сделки при изменении лодки/количества
-      const amount = calculateDealAmount(interestBoat, quantity);
+      // Сохраняем текущую сумму или оставляем null
+      const amount = currentDeal.amount ? Number(currentDeal.amount) : null;
       
       // Определяем значение pendingApproval
       let pendingApproval = currentDeal.pendingApproval;
@@ -117,13 +117,6 @@ export class DealService {
     } catch (e) {
       throw ApiError.BadRequest(400, `Ошибка update ${e}`);
     }
-  }
-
-  /**
-   * Получить цены на все лодки
-   */
-  public static getBoatPrices() {
-    return BOAT_PRICES;
   }
 
   public static async getDeals(refreshToken?: string) {

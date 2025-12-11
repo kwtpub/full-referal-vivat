@@ -64,18 +64,6 @@ export class DealController {
     }
   }
 
-  /**
-   * Получить цены на все типы лодок
-   */
-  public static async getBoatPrices(req: any, res: any, next: any) {
-    try {
-      const prices = DealService.getBoatPrices();
-      return res.json(prices);
-    } catch (e) {
-      next(e);
-    }
-  }
-
   public static async getDeals(req: any, res: any, next: any) {
     try {
       const refreshToken = req.cookies.refreshToken;

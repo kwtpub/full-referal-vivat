@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { Button, Input, Checkbox } from '../../ui';
 import ClientService from '../../../service/ClientService';
-import DealService, { type InterestBoat, type Status, type Stage } from '../../../service/DealService';
+import DealService, { type Status, type Stage } from '../../../service/DealService';
 import { Context } from '../../../main';
 import './AddClientModal.css';
 
@@ -59,18 +59,13 @@ const AddClientModal = ({ isOpen, onClose, onSuccess }: AddClientModalProps) => 
     
     setPhone(formatted);
   };
-  const [selectedBoats, setSelectedBoats] = useState<InterestBoat[]>([]);
+  
+  const [boatName, setBoatName] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<Status | ''>('');
   const [selectedStage, setSelectedStage] = useState<Stage | ''>('');
-  const [errors, setErrors] = useState<{ name?: string; phone?: string }>({});
+  const [errors, setErrors] = useState<{ name?: string; phone?: string; boatName?: string }>({});
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState('');
-
-  const boatTypes: { value: InterestBoat; label: string }[] = [
-    { value: 'HardTop', label: 'Hard Top' },
-    { value: 'ClassicBoat', label: 'Classic Boat' },
-    { value: 'Bowrider', label: 'Bowrider' },
-  ];
 
   const statusTypes: { value: Status; label: string }[] = [
     { value: 'Холодный', label: 'Холодный' },
@@ -92,7 +87,7 @@ const AddClientModal = ({ isOpen, onClose, onSuccess }: AddClientModalProps) => 
       // Сброс формы при закрытии
       setName('');
       setPhone('');
-      setSelectedBoats([]);
+      setBoatName('');
       setSelectedStatus('');
       setSelectedStage('');
       setErrors({});
@@ -132,7 +127,7 @@ const AddClientModal = ({ isOpen, onClose, onSuccess }: AddClientModalProps) => 
   };
 
   const validateForm = () => {
-    const newErrors: { name?: string; phone?: string } = {};
+    const newErrors: { name?: string; phone?: string; boatName?: string } = {};
 
     if (!name.trim()) {
       newErrors.name = 'Имя обязательно для заполнения';
@@ -147,6 +142,10 @@ const AddClientModal = ({ isOpen, onClose, onSuccess }: AddClientModalProps) => 
       if (!normalized) {
         newErrors.phone = 'Введите корректный российский номер телефона';
       }
+    }
+
+    if (!boatName.trim()) {
+      newErrors.boatName = 'Наименование лодки/катера обязательно';
     }
 
     setErrors(newErrors);
@@ -169,11 +168,6 @@ const AddClientModal = ({ isOpen, onClose, onSuccess }: AddClientModalProps) => 
 
     if (!selectedStage) {
       setServerError('Выберите интерес клиента');
-      return;
-    }
-
-    if (selectedBoats.length === 0) {
-      setServerError('Выберите хотя бы один тип лодки');
       return;
     }
 
@@ -239,18 +233,13 @@ const AddClientModal = ({ isOpen, onClose, onSuccess }: AddClientModalProps) => 
         throw new Error('Не удалось получить ID клиента');
       }
 
-      // Создаем Deal для каждого выбранного типа лодки
-      // Сумма сделки рассчитывается автоматически на сервере
-      const dealPromises = selectedBoats.map((boat) =>
-        DealService.create(clientId, {
-          interestBoat: boat,
-          quantity: 1,
-          stage: selectedStage as Stage,
-          status: selectedStatus as Status,
-        })
-      );
-
-      await Promise.all(dealPromises);
+      // Создаем сделку с указанным наименованием лодки
+      await DealService.create(clientId, {
+        interestBoat: boatName.trim(),
+        quantity: 1,
+        stage: selectedStage as Stage,
+        status: selectedStatus as Status,
+      });
 
       onSuccess?.();
       onClose();
@@ -345,22 +334,15 @@ const AddClientModal = ({ isOpen, onClose, onSuccess }: AddClientModalProps) => 
               </div>
 
               <div className="add-client-modal-checkbox-group">
-                <h3 className="add-client-modal-checkbox-title">Тип лодки</h3>
-                {boatTypes.map((boat) => (
-                  <Checkbox
-                    key={boat.value}
-                    label={boat.label}
-                    checked={selectedBoats.includes(boat.value)}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setSelectedBoats([...selectedBoats, boat.value]);
-                      } else {
-                        setSelectedBoats(selectedBoats.filter((b) => b !== boat.value));
-                      }
-                    }}
-                    disabled={isLoading}
-                  />
-                ))}
+                <Input
+                  label="Наименование лодки/катера"
+                  type="text"
+                  value={boatName}
+                  onChange={(e) => setBoatName(e.target.value)}
+                  error={errors.boatName}
+                  placeholder="Введите наименование лодки/катера или свой комментарий"
+                  disabled={isLoading}
+                />
               </div>
             </div>
           </div>

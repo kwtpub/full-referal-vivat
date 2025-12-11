@@ -41,7 +41,6 @@ router.get('/deals', DealController.getDeals);
 router.get('/deals/client/:clientId', DealController.getDealsByClientId);
 router.get('/deals/agent/:agentId', DealController.getDealsByAgentId);
 router.get('/deal/:id', DealController.getDealById);
-router.get('/boats/prices', DealController.getBoatPrices);
 router.post('/deal/:id/approve', authMiddleware, DealController.approveDeal);
 router.post('/deal/:id/reject', authMiddleware, DealController.rejectDeal);
 
