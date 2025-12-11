@@ -1,8 +1,6 @@
 # Простой docker-compose для быстрого запуска
 # Собирает клиент внутри Docker (медленнее, но проще)
 
-version: "3.9"
-
 services:
   db:
     image: mysql:8.0
@@ -73,7 +71,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx/nginx-simple.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
       - certbot_data:/etc/letsencrypt
       - certbot_www:/var/www/certbot
@@ -82,9 +80,7 @@ services:
 
 volumes:
   db_data:
-  # Хранение сертификатов Let's Encrypt (Certificate is saved at: /etc/letsencrypt/)
   certbot_data:
-  # Временные файлы для ACME challenge
   certbot_www:
 
 networks:

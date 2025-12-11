@@ -1,8 +1,6 @@
 # Production Docker Compose configuration
 # Использует предварительно собранный frontend и production настройки
 
-version: "3.9"
-
 services:
   db:
     image: mysql:8.0
@@ -69,9 +67,7 @@ services:
 
 volumes:
   db_data:
-  # Хранение сертификатов Let's Encrypt (Certificate is saved at: /etc/letsencrypt/)
   certbot_data:
-  # Временные файлы для ACME challenge
   certbot_www:
 
 networks:
