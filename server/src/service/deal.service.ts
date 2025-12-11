@@ -49,6 +49,12 @@ export class DealService {
     if (!agentData) {
       throw ApiError.BadRequest(400, 'токен устарел');
     }
+    
+    const agent = agentData as { id: string; isAdmin: boolean };
+    if (!agent.isAdmin) {
+      throw ApiError.BadRequest(403, 'Доступ запрещен. Только администраторы могут удалять сделки.');
+    }
+    
     const deletedDeal = await DealModel.delete(id)
     return deletedDeal
 

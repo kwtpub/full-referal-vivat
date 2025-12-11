@@ -9,6 +9,7 @@ interface DropdownMenuProps {
   onDelete: () => void;
   position: { top: number; left: number };
   showAdminActions?: boolean;
+  isAdmin?: boolean;
   onApprove?: () => void;
   onReject?: () => void;
 }
@@ -20,6 +21,7 @@ const DropdownMenu = ({
   onDelete, 
   position,
   showAdminActions = false,
+  isAdmin = false,
   onApprove,
   onReject
 }: DropdownMenuProps) => {
@@ -118,13 +120,15 @@ const DropdownMenu = ({
       >
         Редактировать
       </button>
-      <button 
-        className="dropdown-menu-item dropdown-menu-item-danger" 
-        onClick={handleDelete}
-        type="button"
-      >
-        Удалить
-      </button>
+      {isAdmin && (
+        <button 
+          className="dropdown-menu-item dropdown-menu-item-danger" 
+          onClick={handleDelete}
+          type="button"
+        >
+          Удалить
+        </button>
+      )}
     </div>,
     document.body
   );

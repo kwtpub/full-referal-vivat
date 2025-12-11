@@ -41,6 +41,7 @@ const DealMenuButton = ({ deal, onEdit, onDelete, isAdmin = false, onApprove, on
           onDelete={onDelete}
           position={position}
           showAdminActions={showAdminActions}
+          isAdmin={isAdmin}
           onApprove={onApprove}
           onReject={onReject}
         />
