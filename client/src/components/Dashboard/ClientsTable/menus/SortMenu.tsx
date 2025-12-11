@@ -84,7 +84,7 @@ const SortMenu = ({
         onClick={() => handleSort('stage')}
         type="button"
       >
-        По этапу воронки
+        По интересу клиента
       </button>
       <button 
         className="sort-menu-item" 

@@ -87,7 +87,7 @@ const LoginPage = () => {
         <header className="login-header">
           <BackButton onClick={() => navigate('/')} />
           <img src="/images/logo-01.png" alt="Vivat Logo" className="login-logo login-logo-desktop" />
-          <img src="/images/logo-03 1.png" alt="Vivat Logo" className="login-logo login-logo-mobile" />
+          <img src="/images/logo-03.svg" alt="Vivat Logo" className="login-logo login-logo-mobile" />
         </header>
 
         <h1 className="login-title">

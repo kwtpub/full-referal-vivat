@@ -212,7 +212,7 @@ const ClientsTable = ({ onAddClientClick, refreshTrigger, onDataChanged }: Clien
           <div className="dashboard-clients-table-col">НОМЕР</div>
           <div className="dashboard-clients-table-col">ИМЯ</div>
           <div className="dashboard-clients-table-col">СТАТУС</div>
-          <div className="dashboard-clients-table-col">ЭТАП ВОРОНКИ</div>
+          <div className="dashboard-clients-table-col">ИНТЕРЕС КЛИЕНТА</div>
           <div className="dashboard-clients-table-col">КАТЕР</div>
           <div className="dashboard-clients-table-col"></div>
         </div>
