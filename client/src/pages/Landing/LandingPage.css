@@ -2,7 +2,7 @@
   width: 100%;
   min-height: 100vh;
   background-color: #090909;
-  background-image: url('/images/VBALCK.jpg');
+  background-image: url('/images/VBALCK.png');
   background-size: 100% auto;
   background-position: center top;
   background-repeat: no-repeat;
@@ -19,7 +19,7 @@
 
 @media (max-width: 768px) {
   .landing-page {
-    background-image: url('/images/vid-lodki-na-vode.jpg');
+    background-image: url('/images/vid-lodki-na-vode.jpg.JPG');
     background-size: 100% auto;
     background-position: center top;
     background-attachment: scroll;
