@@ -19,3 +19,11 @@
   color: #898989;
 }
 
+.dashboard-clients-table-cell-boat {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 200px;
+  white-space: normal;
+  line-height: 1.4;
+}
+

@@ -79,6 +79,14 @@ const ClientsTable = ({ onAddClientClick, refreshTrigger, onDataChanged }: Clien
     return boatNames[interestBoat] || interestBoat;
   };
 
+  const formatBoatName = (interestBoat: string): string => {
+    const boatName = getBoatName(interestBoat);
+    if (boatName.length > 20) {
+      return boatName.slice(0, 40);
+    }
+    return boatName;
+  };
+
   const formatClientId = (id: string): string => {
     // Берем последние 5 символов ID для отображения
     return `#${id.slice(-5)}`;
@@ -244,7 +252,9 @@ const ClientsTable = ({ onAddClientClick, refreshTrigger, onDataChanged }: Clien
                   )}
                 </div>
               </div>
-              <div className="dashboard-clients-table-cell" data-label="Катер">{getBoatName(deal.interestBoat)}</div>
+              <div className="dashboard-clients-table-cell dashboard-clients-table-cell-boat" data-label="Катер">
+                {formatBoatName(deal.interestBoat)}
+              </div>
               <div className="dashboard-clients-table-cell" data-label="">
                 <DealMenuButton
                   deal={deal}
