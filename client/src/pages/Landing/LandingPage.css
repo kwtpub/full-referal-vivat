@@ -19,25 +19,44 @@
 
 @media (max-width: 768px) {
   .landing-page {
+    background-image: none;
+  }
+  
+  .landing-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    max-height: 600px;
     background-image: url('/images/vid-lodki-na-vode.jpg.JPG');
     background-size: 100% auto;
     background-position: center top;
-    background-attachment: scroll;
+    background-repeat: no-repeat;
+    z-index: 0;
+    pointer-events: none;
+  }
+  
+  .landing-page > * {
+    position: relative;
+    z-index: 1;
   }
 }
 
 @media (max-width: 480px) {
   .landing-page {
-    background-size: 100% auto;
-    background-position: center top;
     min-height: 100vh;
+  }
+  
+  .landing-page::before {
+    max-height: 500px;
   }
 }
 
 @media (max-width: 393px) {
-  .landing-page {
-    background-size: cover;
-    background-position: center 0%;
+  .landing-page::before {
+    max-height: 450px;
   }
 }
 

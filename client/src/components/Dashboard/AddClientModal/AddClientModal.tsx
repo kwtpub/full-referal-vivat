@@ -1,8 +1,7 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Input, Checkbox } from '../../ui';
 import ClientService from '../../../service/ClientService';
 import DealService, { type Status, type Stage } from '../../../service/DealService';
-import { Context } from '../../../main';
 import './AddClientModal.css';
 
 interface AddClientModalProps {
@@ -12,8 +11,6 @@ interface AddClientModalProps {
 }
 
 const AddClientModal = ({ isOpen, onClose, onSuccess }: AddClientModalProps) => {
-  const { store } = useContext(Context);
-  const isAdmin = store.user.isAdmin || false;
   
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -313,7 +310,7 @@ const AddClientModal = ({ isOpen, onClose, onSuccess }: AddClientModalProps) => 
                     onChange={(e) => {
                       setSelectedStatus(e.target.checked ? status.value : '');
                     }}
-                    disabled={isLoading || !isAdmin}
+                    disabled={isLoading}
                   />
                 ))}
               </div>
