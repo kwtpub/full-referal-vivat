@@ -25,6 +25,7 @@
     left: 0;
     width: 100%;
     height: 100vh;                /* фон только на первом экране */
+    min-height: 470px;            /* минимальная высота фона */
     background-image: url('/images/vid-lodki-na-vode.jpg.JPG');
     background-size: cover;       /* сохраняет пропорции */
     background-position: center top;
