@@ -10,7 +10,7 @@ const RegistrationSuccess = ({ onStart }: RegistrationSuccessProps) => {
     <div className="registration-success-page">
       <div className="registration-success-container">
         <img src="/images/logo-01.png" alt="Vivat Logo" className="registration-success-logo registration-success-logo-desktop" />
-        <img src="/images/logo-03 1.png" alt="Vivat Logo" className="registration-success-logo registration-success-logo-mobile" />
+        <img src="/images/logo-03.svg" alt="Vivat Logo" className="registration-success-logo registration-success-logo-mobile" />
 
         <div className="registration-success-content">
           <h1 className="registration-success-title">

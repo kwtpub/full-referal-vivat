@@ -29,9 +29,15 @@ const Header = ({ onRegisterClick }: HeaderProps) => {
         
         <nav className="landing-header-nav">
           <a href="#about" className="landing-header-nav-link">О нас</a>
-          <button onClick={() => navigate('/dashboard')} className="landing-header-nav-link">Dashboard</button>
           <a href="#contacts" className="landing-header-nav-link">Контакты</a>
         </nav>
+
+        <button 
+          onClick={() => navigate('/login')} 
+          className="landing-header-nav-link landing-header-login"
+        >
+          Вход
+        </button>
 
         <Button
           variant="primary"

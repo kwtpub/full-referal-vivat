@@ -54,6 +54,17 @@
   opacity: 0.7;
 }
 
+.landing-header-login {
+  margin-left: auto;
+  margin-right: 20px;
+}
+
+@media (max-width: 1024px) {
+  .landing-header-login {
+    margin-right: 10px;
+  }
+}
+
 .landing-header-button {
   flex-shrink: 0;
   width: 198px;
@@ -138,6 +149,10 @@
   }
 
   .landing-header-nav {
+    display: none;
+  }
+
+  .landing-header-login {
     display: none;
   }
 

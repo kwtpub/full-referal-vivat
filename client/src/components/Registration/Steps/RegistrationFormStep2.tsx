@@ -114,7 +114,7 @@ const RegistrationFormStep2 = ({ onBack, onSubmit, onSwitchToLogin, serverError,
         <header className="registration-header">
           <BackButton onClick={() => navigate('/')} />
           <img src="/images/logo-01.png" alt="Vivat Logo" className="registration-logo registration-logo-desktop" />
-          <img src="/images/logo-03 1.png" alt="Vivat Logo" className="registration-logo registration-logo-mobile" />
+          <img src="/images/logo-03.svg" alt="Vivat Logo" className="registration-logo registration-logo-mobile" />
         </header>
 
         <h1 className="registration-title">

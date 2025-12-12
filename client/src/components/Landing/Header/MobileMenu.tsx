@@ -36,19 +36,19 @@ const MobileMenu = ({ isOpen, onClose, onRegisterClick }: MobileMenuProps) => {
       <div className="mobile-menu-overlay" onClick={onClose}></div>
       <div className="mobile-menu-content">
         <nav className="mobile-menu-nav">
-
           <button 
-            onClick={() => handleNavClick('/dashboard')} 
+            onClick={() => handleNavClick('/login')} 
             className="mobile-menu-link"
           >
             Вход
           </button>
-          <button 
-            onClick={() => handleNavClick('/#about')} 
+          <a 
+            href="#about" 
             className="mobile-menu-link"
+            onClick={() => handleNavClick()}
           >
             О нас
-          </button>
+          </a>
           <a 
             href="#contacts" 
             className="mobile-menu-link"

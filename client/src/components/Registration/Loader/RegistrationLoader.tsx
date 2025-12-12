@@ -19,7 +19,7 @@ const RegistrationLoader = () => {
     <div className="registration-loader-page">
       <div className="registration-loader-container">
         <img src="/images/logo-01.png" alt="Vivat Logo" className="registration-loader-logo registration-loader-logo-desktop" />
-        <img src="/images/logo-03 1.png" alt="Vivat Logo" className="registration-loader-logo registration-loader-logo-mobile" />
+        <img src="/images/logo-03.svg" alt="Vivat Logo" className="registration-loader-logo registration-loader-logo-mobile" />
 
         <div className="registration-loader-content">
           <h1 className="registration-loader-title">
