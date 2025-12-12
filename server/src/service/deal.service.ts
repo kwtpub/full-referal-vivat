@@ -30,6 +30,12 @@ export class DealService {
       throw ApiError.BadRequest(404, 'Клиент не найден');
     }
 
+    // Проверяем, нет ли уже заказа для этого клиента
+    const existingDeals = await DealModel.getDealsByClientId(clientId);
+    if (existingDeals && existingDeals.length > 0) {
+      throw ApiError.BadRequest(409, 'Для этого клиента уже существует заказ. Один клиент может иметь только один заказ.');
+    }
+
     // Сумма сделки может быть задана вручную или оставлена null
     const amount = null;
 
