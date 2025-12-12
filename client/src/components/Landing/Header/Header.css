@@ -4,7 +4,6 @@
   background-color: transparent;
   position: relative;
   z-index: 100;
-  isolation: isolate;
 }
 
 .landing-header-container {
@@ -95,7 +94,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  z-index: 1001;
+  z-index: 10003;
 }
 
 .landing-header-burger-icon {
@@ -199,6 +198,10 @@
     height: 39px;
     justify-self: end;
     grid-column: 3;
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 10003;
   }
 }
 

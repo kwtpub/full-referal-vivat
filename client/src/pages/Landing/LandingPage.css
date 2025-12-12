@@ -10,7 +10,6 @@
   flex-direction: column;
   position: relative;
   overflow-x: hidden;
-  isolation: isolate;
 }
 
 .landing-page > * {
@@ -18,29 +17,32 @@
 }
 
 @media (max-width: 768px) {
-  .landing-page {
-    background-image: none;
-  }
-  
+  /* 1. Высота блока только для фона */
   .landing-page::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100vh;
-    max-height: 600px;
+    height: 100vh;                /* фон только на первом экране */
     background-image: url('/images/vid-lodki-na-vode.jpg.JPG');
-    background-size: 100% auto;
+    background-size: cover;       /* сохраняет пропорции */
     background-position: center top;
     background-repeat: no-repeat;
     z-index: 0;
     pointer-events: none;
   }
-  
+
+  /* 2. Чтобы контент был поверх фона */
   .landing-page > * {
     position: relative;
     z-index: 1;
+  }
+
+  /* 3. Чтобы фон показался */
+  .landing-page {
+    background-image: none;
+    position: relative;
   }
 }
 
@@ -50,13 +52,13 @@
   }
   
   .landing-page::before {
-    max-height: 500px;
+    background-size: 110% 100%;
   }
 }
 
 @media (max-width: 393px) {
   .landing-page::before {
-    max-height: 450px;
+    background-size: 110% 100%;
   }
 }
 

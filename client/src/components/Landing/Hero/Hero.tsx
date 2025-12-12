@@ -1,4 +1,5 @@
 import { Button } from '../../ui';
+import BonusCards from '../BonusCards/BonusCards';
 import './Hero.css';
 
 interface HeroProps {
@@ -15,7 +16,9 @@ const Hero = ({ onStartClick }: HeroProps) => {
             <span className="landing-hero-title-line">ПРИВОДИ КЛИЕНТОВ</span>
             <span className="landing-hero-title-line">ПОЛУЧАЙ ПРЕМИЮ</span>
           </h1>
-          
+        </div>
+        
+        <div className="landing-hero-bottom">
           <Button
             variant="primary"
             size="large"
@@ -24,6 +27,8 @@ const Hero = ({ onStartClick }: HeroProps) => {
           >
             Начать
           </Button>
+          
+          <BonusCards />
         </div>
       </div>
     </section>

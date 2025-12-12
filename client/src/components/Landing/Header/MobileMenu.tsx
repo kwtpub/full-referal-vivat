@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../../ui';
 import './MobileMenu.css';
@@ -31,7 +32,9 @@ const MobileMenu = ({ isOpen, onClose, onRegisterClick }: MobileMenuProps) => {
     };
   }, [isOpen]);
 
-  return (
+  if (!isOpen) return null;
+
+  return createPortal(
     <div className={`mobile-menu ${isOpen ? 'mobile-menu-open' : ''}`}>
       <div className="mobile-menu-overlay" onClick={onClose}></div>
       <div className="mobile-menu-content">
@@ -58,7 +61,8 @@ const MobileMenu = ({ isOpen, onClose, onRegisterClick }: MobileMenuProps) => {
           </a>
         </nav>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
