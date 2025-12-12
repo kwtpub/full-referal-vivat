@@ -203,5 +203,9 @@
     right: 24px;
     z-index: 10003;
   }
+  
+  .landing-page .landing-header-burger.menu-open {
+    display: none;
+  }
 }
 

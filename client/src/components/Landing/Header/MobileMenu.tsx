@@ -37,6 +37,17 @@ const MobileMenu = ({ isOpen, onClose, onRegisterClick }: MobileMenuProps) => {
   return createPortal(
     <div className={`mobile-menu ${isOpen ? 'mobile-menu-open' : ''}`}>
       <div className="mobile-menu-overlay" onClick={onClose}></div>
+      <button 
+        className="mobile-menu-close-button"
+        onClick={onClose}
+        aria-label="Закрыть"
+      >
+        <img 
+          src="/images/close-icon.svg" 
+          alt="Close" 
+          className="mobile-menu-close-icon"
+        />
+      </button>
       <div className="mobile-menu-content">
         <nav className="mobile-menu-nav">
           <button 

@@ -49,23 +49,15 @@ const Header = ({ onRegisterClick }: HeaderProps) => {
         </Button>
 
         <button 
-          className="landing-header-burger"
+          className={`landing-header-burger ${isMenuOpen ? 'menu-open' : ''}`}
           aria-label="Меню"
           onClick={toggleMenu}
         >
-          {isMenuOpen ? (
-            <img 
-              src="/images/close-icon.svg" 
-              alt="Close" 
-              className="landing-header-burger-icon"
-            />
-          ) : (
-            <img 
-              src="/images/burger-menu.svg" 
-              alt="Menu" 
-              className="landing-header-burger-icon"
-            />
-          )}
+          <img 
+            src="/images/burger-menu.svg" 
+            alt="Menu" 
+            className="landing-header-burger-icon"
+          />
         </button>
       </div>
 
