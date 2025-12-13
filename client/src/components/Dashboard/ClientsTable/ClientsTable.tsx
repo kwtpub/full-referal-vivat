@@ -220,7 +220,7 @@ const ClientsTable = ({ onAddClientClick, refreshTrigger, onDataChanged }: Clien
           <div className="dashboard-clients-table-col">НОМЕР</div>
           <div className="dashboard-clients-table-col">ИМЯ</div>
           <div className="dashboard-clients-table-col">СТАТУС</div>
-          <div className="dashboard-clients-table-col">ИНТЕРЕС КЛИЕНТА</div>
+          <div className="dashboard-clients-table-col">СТАТУС СДЕЛКИ</div>
           <div className="dashboard-clients-table-col">КАТЕР</div>
           <div className="dashboard-clients-table-col"></div>
         </div>
@@ -237,7 +237,7 @@ const ClientsTable = ({ onAddClientClick, refreshTrigger, onDataChanged }: Clien
               </div>
               <div className="dashboard-clients-table-cell" data-label="Имя">{deal.client.name}</div>
               <div className="dashboard-clients-table-cell" data-label="Статус">{deal.status}</div>
-              <div className="dashboard-clients-table-cell" data-label="Этап">
+              <div className="dashboard-clients-table-cell" data-label="Статус сделки">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span className={`dashboard-stage-badge dashboard-stage-badge-${getStageType(deal.stage)}`}>
                     {deal.stage}

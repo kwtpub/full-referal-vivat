@@ -5,17 +5,17 @@ const BonusCards = () => {
     {
       icon: '/images/Home.svg',
       title: 'РАБОТАЙ ИЗ ЛЮБОЙ ТОЧКИ МИРА',
-      description: 'We turn ideas into clean, functional digital products.',
+      description: 'Работай удаленно из любой точки мира и управляй своими продажами онлайн.',
     },
     {
       icon: '/images/Award.svg',
       title: 'ПОЛУЧАЙ БОНУСЫ С ПРОДАЖ',
-      description: 'We turn ideas into clean, functional digital products.',
+      description: 'Получай бонусы за каждую успешную продажу и увеличивай свой доход.',
     },
     {
       icon: '/images/Checkcircle.svg',
       title: 'ПОЛНЫЙ КОНТРОЛЬ СВОИХ КЛИЕНТОВ',
-      description: 'We turn ideas into clean, functional digital products.',
+      description: 'Отслеживай статусы сделок, управляй клиентами и контролируй весь процесс продаж.',
     },
   ];
 

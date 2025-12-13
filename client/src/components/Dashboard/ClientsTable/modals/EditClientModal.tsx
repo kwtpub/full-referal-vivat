@@ -210,7 +210,7 @@ const EditClientModal = ({ isOpen, onClose, onSuccess, deal }: EditClientModalPr
     }
 
     if (!selectedStage) {
-      setServerError('Выберите интерес клиента');
+      setServerError('Выберите статус сделки');
       return;
     }
 
@@ -315,7 +315,7 @@ const EditClientModal = ({ isOpen, onClose, onSuccess, deal }: EditClientModalPr
               </div>
 
               <div className="edit-client-modal-checkbox-group">
-                <h3 className="edit-client-modal-checkbox-title">Интерес клиента</h3>
+                <h3 className="edit-client-modal-checkbox-title">Статус сделки</h3>
                 {stageTypes.map((stage) => (
                   <Checkbox
                     key={stage.value}

@@ -228,7 +228,7 @@ const Dashboard = () => {
           alt="" 
           className="dashboard-decorative-image" 
         />
-        <h1 className="dashboard-title">DASHBOARD</h1>
+        <h1 className="dashboard-title">ПРОГРЕСС</h1>
 
         <div className="dashboard-stats">
           {statsCards.map((card, index) => (
