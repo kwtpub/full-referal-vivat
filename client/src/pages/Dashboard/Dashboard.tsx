@@ -74,8 +74,8 @@ const Dashboard = () => {
   // Количество уникальных клиентов из сделок
   const uniqueClientIds = new Set(deals.map((deal) => deal.clientId));
   const clientsCount = uniqueClientIds.size;
-  // Считаем только подтвержденные продажи (закрыто И не ожидает подтверждения)
-  const salesCount = deals.filter((deal) => deal.stage === 'Закрыто' && !deal.pendingApproval).length;
+  // Для бонусной системы используем данные с сервера
+  const closedDealsCount = bonusStats?.closedDealsCount || 0;
 
   // Генерируем данные для графиков (последние 6 дней)
   const generateChartData = (values: number[]) => {
@@ -163,17 +163,17 @@ const Dashboard = () => {
     },
     {
       title: 'Продажи',
-      value: salesCount.toString(),
+      value: closedDealsCount.toString(),
       change: nextTierInfo ? `ещё ${nextTierInfo.salesNeeded}` : 'макс',
       changeType: 'positive' as const,
       changeLabel: nextTierInfo ? `до ${nextTierInfo.nextPercent}%` : 'уровень',
       chartData: generateChartData([
-        Math.max(0, salesCount - 5),
-        Math.max(0, salesCount - 3),
-        Math.max(0, salesCount - 4),
-        Math.max(0, salesCount - 2),
-        Math.max(0, salesCount - 1),
-        salesCount,
+        Math.max(0, closedDealsCount - 5),
+        Math.max(0, closedDealsCount - 3),
+        Math.max(0, closedDealsCount - 4),
+        Math.max(0, closedDealsCount - 2),
+        Math.max(0, closedDealsCount - 1),
+        closedDealsCount,
       ]),
     },
     {
@@ -267,15 +267,15 @@ const Dashboard = () => {
                   className="dashboard-progress-fill" 
                   style={{
                     width: nextTierInfo 
-                      ? `${Math.min(((salesCount) / (salesCount + nextTierInfo.salesNeeded)) * 100, 100)}%`
+                      ? `${Math.min(((closedDealsCount) / (closedDealsCount + nextTierInfo.salesNeeded)) * 100, 100)}%`
                       : '100%'
                   }} 
                 />
               </div>
               <span className="dashboard-progress-label">
                 {nextTierInfo 
-                  ? `${salesCount} продаж (ещё ${nextTierInfo.salesNeeded} до ${nextTierInfo.nextPercent}%)`
-                  : `${salesCount} продаж • 8% комиссия`
+                  ? `${closedDealsCount} продаж (ещё ${nextTierInfo.salesNeeded} до ${nextTierInfo.nextPercent}%)`
+                  : `${closedDealsCount} продаж • 5.5% комиссия`
                 }
               </span>
             </div>

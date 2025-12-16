@@ -5,6 +5,7 @@ import ClientService from '../../../../service/ClientService';
 import DealService, { type Status, type Stage } from '../../../../service/DealService';
 import { Context } from '../../../../main';
 import type { Deal } from '../ClientsTable';
+import CloseDealModal from './CloseDealModal';
 import './EditClientModal.css';
 
 interface EditClientModalProps {
@@ -26,6 +27,13 @@ const EditClientModal = ({ isOpen, onClose, onSuccess, deal }: EditClientModalPr
   const [errors, setErrors] = useState<{ name?: string; phone?: string; boatName?: string }>({});
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState('');
+  const [closeDealModalOpen, setCloseDealModalOpen] = useState(false);
+  const [pendingDealUpdate, setPendingDealUpdate] = useState<{
+    interestBoat: string;
+    quantity: number;
+    stage: Stage;
+    status: Status;
+  } | null>(null);
 
   const statusTypes: { value: Status; label: string }[] = [
     { value: 'Холодный', label: 'Холодный' },
@@ -214,6 +222,31 @@ const EditClientModal = ({ isOpen, onClose, onSuccess, deal }: EditClientModalPr
       return;
     }
 
+    // Проверяем, закрывается ли сделка
+    const wasOpen = deal.stage !== 'Закрыто';
+    const willBeClosed = selectedStage === 'Закрыто';
+
+    // Если сделка закрывается и ранее не была закрыта, запрашиваем сумму
+    if (wasOpen && willBeClosed) {
+      // Сохраняем данные для обновления
+      setPendingDealUpdate({
+        interestBoat: boatName.trim(),
+        quantity: 1,
+        stage: selectedStage as Stage,
+        status: selectedStatus as Status,
+      });
+      // Открываем модальное окно для ввода суммы
+      setCloseDealModalOpen(true);
+      return;
+    }
+
+    // Обновляем без ввода суммы
+    await updateDealWithoutAmount();
+  };
+
+  const updateDealWithoutAmount = async () => {
+    if (!deal) return;
+
     setIsLoading(true);
 
     try {
@@ -229,7 +262,7 @@ const EditClientModal = ({ isOpen, onClose, onSuccess, deal }: EditClientModalPr
       // Обновляем клиента
       await ClientService.update(deal.clientId, name.trim(), normalizedPhone);
 
-      // Обновляем сделку с указанным наименованием лодки
+      // Обновляем сделку без суммы
       await DealService.update(deal.id, {
         interestBoat: boatName.trim(),
         quantity: 1,
@@ -248,12 +281,49 @@ const EditClientModal = ({ isOpen, onClose, onSuccess, deal }: EditClientModalPr
     }
   };
 
+  const handleCloseDealConfirm = async (amount: number) => {
+    if (!deal || !pendingDealUpdate) return;
+
+    setIsLoading(true);
+
+    try {
+      // Нормализуем номер телефона к единому формату +7 (XXX) XXX-XX-XX
+      const normalizedPhone = normalizePhone(phone.trim());
+      
+      if (!normalizedPhone) {
+        setServerError('Неверный формат номера телефона');
+        setIsLoading(false);
+        return;
+      }
+
+      // Обновляем клиента
+      await ClientService.update(deal.clientId, name.trim(), normalizedPhone);
+
+      // Обновляем сделку с суммой
+      await DealService.update(deal.id, {
+        ...pendingDealUpdate,
+        amount,
+      });
+
+      setPendingDealUpdate(null);
+      onSuccess?.();
+      onClose();
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message || error?.message || 'Ошибка при обновлении клиента и сделки';
+      setServerError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (!isOpen || !deal) return null;
 
   return createPortal(
-    <div className="edit-client-modal">
-      <div className="edit-client-modal-overlay" onClick={onClose} />
-      <div className="edit-client-modal-content">
+    <>
+      <div className="edit-client-modal">
+        <div className="edit-client-modal-overlay" onClick={onClose} />
+        <div className="edit-client-modal-content">
         <div className="edit-client-modal-header">
           <h2 className="edit-client-modal-title">Редактировать клиента</h2>
           <button
@@ -363,7 +433,17 @@ const EditClientModal = ({ isOpen, onClose, onSuccess, deal }: EditClientModalPr
           </div>
         </form>
       </div>
-    </div>,
+    </div>
+      <CloseDealModal
+        isOpen={closeDealModalOpen}
+        onClose={() => {
+          setCloseDealModalOpen(false);
+          setPendingDealUpdate(null);
+        }}
+        onConfirm={handleCloseDealConfirm}
+        clientName={deal?.client.name}
+      />
+    </>,
     document.body
   );
 };

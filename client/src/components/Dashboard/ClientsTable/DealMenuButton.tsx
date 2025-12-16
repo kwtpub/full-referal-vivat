@@ -17,6 +17,16 @@ const DealMenuButton = ({ deal, onEdit, onDelete, isAdmin = false, onApprove, on
   // Показываем админские действия только если пользователь админ И сделка ожидает подтверждения
   const showAdminActions = isAdmin && deal.pendingApproval;
 
+  // Проверяем, может ли пользователь редактировать сделку
+  // Не-админ не может редактировать подтвержденные закрытые сделки
+  const isClosedAndApproved = deal.stage === 'Закрыто' && !deal.pendingApproval;
+  const canEdit = isAdmin || !isClosedAndApproved;
+
+  // Если пользователь не админ и не может редактировать - скрываем кнопку меню
+  if (!isAdmin && !canEdit) {
+    return null;
+  }
+
   return (
     <>
       <button
@@ -42,6 +52,7 @@ const DealMenuButton = ({ deal, onEdit, onDelete, isAdmin = false, onApprove, on
           position={position}
           showAdminActions={showAdminActions}
           isAdmin={isAdmin}
+          canEdit={canEdit}
           onApprove={onApprove}
           onReject={onReject}
         />

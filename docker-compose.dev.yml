@@ -1,0 +1,62 @@
+# Docker Compose для локальной разработки
+# Использует внешнюю базу данных и hot-reload
+
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    container_name: vivat-server-dev
+    restart: unless-stopped
+    env_file:
+      - ./server/.env
+    environment:
+      NODE_ENV: development
+      PORT: ${PORT:-3000}
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./server/src:/app/src
+      - ./server/prisma:/app/prisma
+      - ./server/package.json:/app/package.json
+      - ./server/tsconfig.json:/app/tsconfig.json
+      - ./server/nodemon.json:/app/nodemon.json
+      - server_node_modules:/app/node_modules
+    networks:
+      - app-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.dev
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+    container_name: vivat-client-dev
+    restart: unless-stopped
+    depends_on:
+      - server
+    env_file:
+      - ./server/.env
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client/src:/app/src
+      - ./client/public:/app/public
+      - ./client/package.json:/app/package.json
+      - ./client/vite.config.ts:/app/vite.config.ts
+      - ./client/tsconfig.json:/app/tsconfig.json
+      - ./client/tsconfig.build.json:/app/tsconfig.build.json
+      - ./client/index.html:/app/index.html
+      - client_node_modules:/app/node_modules
+    networks:
+      - app-network
+
+volumes:
+  server_node_modules:
+  client_node_modules:
+
+networks:
+  app-network:
+    driver: bridge

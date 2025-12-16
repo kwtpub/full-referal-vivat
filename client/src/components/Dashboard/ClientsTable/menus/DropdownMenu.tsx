@@ -10,6 +10,7 @@ interface DropdownMenuProps {
   position: { top: number; left: number };
   showAdminActions?: boolean;
   isAdmin?: boolean;
+  canEdit?: boolean;
   onApprove?: () => void;
   onReject?: () => void;
 }
@@ -22,6 +23,7 @@ const DropdownMenu = ({
   position,
   showAdminActions = false,
   isAdmin = false,
+  canEdit = true,
   onApprove,
   onReject
 }: DropdownMenuProps) => {
@@ -113,13 +115,15 @@ const DropdownMenu = ({
           <div className="dropdown-menu-divider" />
         </>
       )}
-      <button 
-        className="dropdown-menu-item" 
-        onClick={handleEdit}
-        type="button"
-      >
-        Редактировать
-      </button>
+      {canEdit && (
+        <button 
+          className="dropdown-menu-item" 
+          onClick={handleEdit}
+          type="button"
+        >
+          Редактировать
+        </button>
+      )}
       {isAdmin && (
         <button 
           className="dropdown-menu-item dropdown-menu-item-danger" 

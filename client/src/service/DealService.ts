@@ -9,6 +9,7 @@ export interface DealCreateData {
   quantity: number;
   stage: Stage;
   status: Status;
+  amount?: number;
 }
 
 export default class DealService {

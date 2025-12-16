@@ -76,25 +76,38 @@ export class DealService {
     quantity: number,
     stage: Stage,
     status: Status,
+    amountFromClient?: number,
   ) {
     try {
       const agentData = await TokenService.validateRefresh(refreshToken);
       if (!agentData) {
         throw ApiError.BadRequest(400, 'токен устарел');
       }
-      const agentId = (agentData as { id: string }).id;
+      const agent = agentData as { id: string; isAdmin: boolean };
+      const agentId = agent.id;
       
       // Получаем текущую сделку для проверки изменения статуса
       const currentDeal = await DealModel.getDealById(id);
       if (!currentDeal) {
         throw ApiError.BadRequest(404, 'Сделка не найдена');
       }
+
+      // Проверяем права доступа: не-админ не может редактировать подтвержденные закрытые сделки
+      const isClosedAndApproved = currentDeal.stage === 'Закрыто' && !currentDeal.pendingApproval;
+      if (!agent.isAdmin && isClosedAndApproved) {
+        throw ApiError.BadRequest(403, 'Нельзя редактировать подтвержденную закрытую сделку');
+      }
       
       const wasOpen = currentDeal.stage !== 'Закрыто';
       const willBeClosed = stage === 'Закрыто';
       
-      // Сохраняем текущую сумму или оставляем null
-      const amount = currentDeal.amount ? Number(currentDeal.amount) : null;
+      // Определяем сумму сделки
+      let amount: number | null = currentDeal.amount ? Number(currentDeal.amount) : null;
+      
+      // Если передана новая сумма от клиента, используем её
+      if (amountFromClient !== undefined) {
+        amount = amountFromClient;
+      }
       
       // Определяем значение pendingApproval
       let pendingApproval = currentDeal.pendingApproval;

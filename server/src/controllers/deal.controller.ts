@@ -49,7 +49,7 @@ export class DealController {
     try {
       const dealId = req.params.id;
       const refreshToken = req.cookies.refreshToken;
-      const { interestBoat, quantity, stage, status } = req.body;
+      const { interestBoat, quantity, stage, status, amount } = req.body;
       const updatedDeal = await DealService.update(
         dealId,
         refreshToken,
@@ -57,6 +57,7 @@ export class DealController {
         quantity,
         stage,
         status,
+        amount,
       );
       return res.json(updatedDeal);
     } catch (e) {

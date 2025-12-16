@@ -1,0 +1,25 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Копируем package файлы
+COPY package*.json ./
+
+# Устанавливаем зависимости (включая dev)
+RUN npm ci
+
+# Копируем конфигурационные файлы
+COPY tsconfig.json ./
+COPY nodemon.json ./
+COPY prisma ./prisma
+
+# Генерируем Prisma клиент
+RUN npx prisma generate
+
+# Копируем исходный код (будет перезаписан volume)
+COPY src ./src
+
+EXPOSE 3000
+
+# Запускаем в режиме разработки с nodemon
+CMD ["npm", "run", "dev"]

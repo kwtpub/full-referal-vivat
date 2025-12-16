@@ -1,0 +1,36 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Устанавливаем системные зависимости для сборки native модулей (optipng-bin, gifsicle и др.)
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    zlib-dev \
+    libpng-dev \
+    autoconf \
+    automake \
+    libtool \
+    nasm
+
+# Копируем package файлы
+COPY package*.json ./
+
+# Устанавливаем зависимости
+RUN npm ci
+
+# Копируем конфигурационные файлы
+COPY vite.config.ts ./
+COPY tsconfig.json ./
+COPY tsconfig.build.json ./
+COPY index.html ./
+
+# Копируем исходный код (будет перезаписан volume)
+COPY src ./src
+COPY public ./public
+
+EXPOSE 5173
+
+# Запускаем Vite dev server
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5173"]

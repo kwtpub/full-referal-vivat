@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import DealService, { type Status, type Stage } from '../../../service/DealService';
+import CloseDealModal from '../ClientsTable/modals/CloseDealModal';
 import './PendingApprovalDeals.css';
 
 export interface Deal {
@@ -9,6 +10,7 @@ export interface Deal {
   stage: Stage;
   status: Status;
   pendingApproval: boolean;
+  amount?: number | string | null;
   client: {
     id: string;
     name: string;
@@ -29,6 +31,8 @@ interface PendingApprovalDealsProps {
 const PendingApprovalDeals = ({ refreshTrigger, onDataChanged }: PendingApprovalDealsProps) => {
   const [deals, setDeals] = useState<Deal[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [closeDealModalOpen, setCloseDealModalOpen] = useState(false);
+  const [selectedDeal, setSelectedDeal] = useState<Deal | null>(null);
 
   const fetchPendingDeals = async () => {
     setIsLoading(true);
@@ -53,7 +57,19 @@ const PendingApprovalDeals = ({ refreshTrigger, onDataChanged }: PendingApproval
     fetchPendingDeals();
   }, [refreshTrigger]);
 
-  const handleApprove = async (dealId: string) => {
+  const handleApprove = async (deal: Deal) => {
+    // Если у сделки нет суммы, запрашиваем её через модальное окно
+    if (!deal.amount || Number(deal.amount) === 0) {
+      setSelectedDeal(deal);
+      setCloseDealModalOpen(true);
+      return;
+    }
+
+    // Если сумма уже есть, подтверждаем сделку
+    await approveDealDirectly(deal.id);
+  };
+
+  const approveDealDirectly = async (dealId: string) => {
     try {
       await DealService.approveDeal(dealId);
       fetchPendingDeals();
@@ -63,6 +79,29 @@ const PendingApprovalDeals = ({ refreshTrigger, onDataChanged }: PendingApproval
       const errorMessage = err?.response?.data?.message || 'Ошибка подтверждения';
       alert(errorMessage);
       console.error('Ошибка подтверждения сделки:', err);
+    }
+  };
+
+  const handleCloseDealConfirm = async (amount: number) => {
+    if (!selectedDeal) return;
+
+    try {
+      // Обновляем сделку с суммой
+      await DealService.update(selectedDeal.id, {
+        interestBoat: selectedDeal.interestBoat,
+        quantity: 1,
+        stage: selectedDeal.stage,
+        status: selectedDeal.status,
+        amount,
+      });
+
+      // Теперь подтверждаем сделку
+      await approveDealDirectly(selectedDeal.id);
+      setSelectedDeal(null);
+    } catch (err: any) {
+      const errorMessage = err?.response?.data?.message || 'Ошибка обновления суммы';
+      alert(errorMessage);
+      console.error('Ошибка обновления суммы сделки:', err);
     }
   };
 
@@ -123,7 +162,7 @@ const PendingApprovalDeals = ({ refreshTrigger, onDataChanged }: PendingApproval
               <button
                 type="button"
                 className="pending-approval-btn pending-approval-btn-approve"
-                onClick={() => handleApprove(deal.id)}
+                onClick={() => handleApprove(deal)}
               >
                 Подтвердить
               </button>
@@ -131,6 +170,15 @@ const PendingApprovalDeals = ({ refreshTrigger, onDataChanged }: PendingApproval
           </div>
         ))}
       </div>
+      <CloseDealModal
+        isOpen={closeDealModalOpen}
+        onClose={() => {
+          setCloseDealModalOpen(false);
+          setSelectedDeal(null);
+        }}
+        onConfirm={handleCloseDealConfirm}
+        clientName={selectedDeal?.client.name}
+      />
     </div>
   );
 };

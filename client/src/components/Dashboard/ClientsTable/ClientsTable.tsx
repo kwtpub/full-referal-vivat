@@ -5,6 +5,7 @@ import './ClientsTable.css';
 import DealMenuButton from './DealMenuButton';
 import DeleteConfirmModal from './modals/DeleteConfirmModal';
 import EditClientModal from './modals/EditClientModal';
+import CloseDealModal from './modals/CloseDealModal';
 import SortMenu, { type SortOption } from './menus/SortMenu';
 import { useSortMenu } from './hooks/useSortMenu';
 import { Context } from '../../../main';
@@ -16,6 +17,7 @@ export interface Deal {
   stage: Stage;
   status: Status;
   pendingApproval: boolean;
+  amount?: number | string | null;
   client: {
     id: string;
     name: string;
@@ -40,6 +42,8 @@ const ClientsTable = ({ onAddClientClick, refreshTrigger, onDataChanged }: Clien
   const [dealToDelete, setDealToDelete] = useState<{ id: string; clientName: string } | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [dealToEdit, setDealToEdit] = useState<Deal | null>(null);
+  const [closeDealModalOpen, setCloseDealModalOpen] = useState(false);
+  const [dealToApprove, setDealToApprove] = useState<Deal | null>(null);
   const sortMenu = useSortMenu();
   const { isOpen: isSortMenuOpen, position: sortMenuPosition, width: sortMenuWidth, buttonRef: sortButtonRef, toggleMenu: toggleSortMenu, closeMenu: closeSortMenu } = sortMenu;
 
@@ -148,7 +152,19 @@ const ClientsTable = ({ onAddClientClick, refreshTrigger, onDataChanged }: Clien
     }
   };
 
-  const handleApproveDeal = async (dealId: string) => {
+  const handleApproveDeal = async (deal: Deal) => {
+    // Если у сделки нет суммы, запрашиваем её через модальное окно
+    if (!deal.amount || Number(deal.amount) === 0) {
+      setDealToApprove(deal);
+      setCloseDealModalOpen(true);
+      return;
+    }
+
+    // Если сумма уже есть, подтверждаем сделку
+    await approveDealDirectly(deal.id);
+  };
+
+  const approveDealDirectly = async (dealId: string) => {
     try {
       await DealService.approveDeal(dealId);
       // Обновляем список после подтверждения
@@ -159,6 +175,29 @@ const ClientsTable = ({ onAddClientClick, refreshTrigger, onDataChanged }: Clien
       console.error('Ошибка подтверждения сделки:', err);
       const errorMessage = err?.response?.data?.message || 'Ошибка при подтверждении сделки';
       alert(errorMessage);
+    }
+  };
+
+  const handleCloseDealConfirm = async (amount: number) => {
+    if (!dealToApprove) return;
+
+    try {
+      // Обновляем сделку с суммой
+      await DealService.update(dealToApprove.id, {
+        interestBoat: dealToApprove.interestBoat,
+        quantity: 1,
+        stage: dealToApprove.stage,
+        status: dealToApprove.status,
+        amount,
+      });
+
+      // Теперь подтверждаем сделку
+      await approveDealDirectly(dealToApprove.id);
+      setDealToApprove(null);
+    } catch (err: any) {
+      const errorMessage = err?.response?.data?.message || 'Ошибка обновления суммы';
+      alert(errorMessage);
+      console.error('Ошибка обновления суммы сделки:', err);
     }
   };
 
@@ -261,7 +300,7 @@ const ClientsTable = ({ onAddClientClick, refreshTrigger, onDataChanged }: Clien
                   onEdit={() => handleEdit(deal)}
                   onDelete={() => handleDeleteClick(deal.id, deal.client.name)}
                   isAdmin={isAdmin}
-                  onApprove={() => handleApproveDeal(deal.id)}
+                  onApprove={() => handleApproveDeal(deal)}
                   onReject={() => handleRejectDeal(deal.id)}
                 />
               </div>
@@ -288,6 +327,16 @@ const ClientsTable = ({ onAddClientClick, refreshTrigger, onDataChanged }: Clien
         }}
         onSuccess={handleEditSuccess}
         deal={dealToEdit}
+      />
+
+      <CloseDealModal
+        isOpen={closeDealModalOpen}
+        onClose={() => {
+          setCloseDealModalOpen(false);
+          setDealToApprove(null);
+        }}
+        onConfirm={handleCloseDealConfirm}
+        clientName={dealToApprove?.client.name}
       />
 
       <SortMenu
