@@ -54,6 +54,17 @@ export class ClientController {
     }
   }
 
+  public static async deleteById(req: any, res: any, next: any) {
+    try {
+      const clientId = req.params.id;
+      const refreshToken = req.cookies.refreshToken;
+      const deletedClient = await ClientService.deleteById(clientId, refreshToken);
+      return res.json(deletedClient);
+    } catch (e) {
+      next(e);
+    }
+  }
+
   public static async update(req: any, res: any, next: any) {
     try {
       const errors = validationResult(req);

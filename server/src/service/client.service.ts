@@ -1,4 +1,6 @@
 import { ClientModel } from "../models/client.model.js";
+import { DealModel } from "../models/deal.model.js";
+import { BonusService } from "./bonus.service.js";
 import { TokenService } from "./token.service.js";
 import { ApiError } from "../exceptions/error-api.js";
 
@@ -57,6 +59,39 @@ export class ClientService {
       return client;
     } catch(e) {
       throw ApiError.BadRequest(409, 'Ошибка удаления');
+    }
+  }
+
+  public static async deleteById(id: string, refreshToken: string) {
+    const agentData = await TokenService.validateRefresh(refreshToken);
+    if (!agentData) {
+      throw ApiError.BadRequest(400, 'токен устарел');
+    }
+    
+    const admin = agentData as { id: string; isAdmin: boolean };
+    if (!admin.isAdmin) {
+      throw ApiError.BadRequest(403, 'Доступ запрещен. Только администраторы могут удалять клиентов.');
+    }
+
+    try {
+      // Сначала удаляем все сделки клиента и связанные бонусы
+      const deals = await DealModel.getDealsByClientId(id);
+      
+      for (const deal of deals) {
+        // Удаляем бонус, если он есть
+        await BonusService.deleteBonusForDeal(deal.id);
+        // Удаляем сделку
+        await DealModel.delete(deal.id);
+      }
+      
+      // Затем удаляем клиента
+      const client = await ClientModel.deleteById(id);
+      return client;
+    } catch(e: any) {
+      if (e.code === 'P2025') {
+        throw ApiError.BadRequest(404, 'Клиент не найден');
+      }
+      throw ApiError.BadRequest(400, `Ошибка удаления клиента: ${e.message || e}`);
     }
   }
 

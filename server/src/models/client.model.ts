@@ -30,6 +30,14 @@ export class ClientModel {
       },
     });
   }
+
+  static async deleteById(id: string) {
+    return prisma.client.delete({
+      where: {
+        id,
+      },
+    });
+  }
   public static async update(id: string, name: string, phone: string) {
     return prisma.client.update({where: {
       id,

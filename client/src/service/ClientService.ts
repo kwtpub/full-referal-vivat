@@ -12,6 +12,10 @@ export default class ClientService {
     } as any);
   }
 
+  static async deleteById(id: string) {
+    return $api.delete<AuthResponse>(`/client/${id}/admin`);
+  }
+
   static async update(id: string, name: string, phone: string) {
     return $api.patch<AuthResponse>(`/client/${id}`, { name, phone });
   }

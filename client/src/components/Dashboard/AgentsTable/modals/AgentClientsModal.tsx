@@ -1,8 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { createPortal } from 'react-dom';
 import type { Agent } from '../../../../service/AgentService';
 import DealService, { type Status, type Stage } from '../../../../service/DealService';
+import ClientService from '../../../../service/ClientService';
 import EditClientModal from '../../ClientsTable/modals/EditClientModal';
+import DeleteConfirmModal from '../../ClientsTable/modals/DeleteConfirmModal';
+import { Context } from '../../../../main';
 import './AgentClientsModal.css';
 
 export interface Deal {
@@ -27,11 +30,16 @@ interface AgentClientsModalProps {
 }
 
 const AgentClientsModal = ({ isOpen, onClose, agent }: AgentClientsModalProps) => {
+  const { store } = useContext(Context);
+  const isAdmin = store?.user?.isAdmin || false;
+  
   const [deals, setDeals] = useState<Deal[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [dealToEdit, setDealToEdit] = useState<Deal | null>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [clientToDelete, setClientToDelete] = useState<{ id: string; name: string } | null>(null);
 
   useEffect(() => {
     if (isOpen && agent) {
@@ -93,6 +101,25 @@ const AgentClientsModal = ({ isOpen, onClose, agent }: AgentClientsModalProps) =
 
   const handleEditSuccess = () => {
     fetchAgentDeals();
+  };
+
+  const handleDeleteClick = (deal: Deal) => {
+    setClientToDelete({ id: deal.client.id, name: deal.client.name });
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!clientToDelete) return;
+
+    try {
+      await ClientService.deleteById(clientToDelete.id);
+      setDeals(prevDeals => prevDeals.filter(deal => deal.client.id !== clientToDelete.id));
+      setClientToDelete(null);
+    } catch (err: any) {
+      console.error('Ошибка удаления клиента:', err);
+      const errorMessage = err?.response?.data?.message || 'Ошибка при удалении клиента';
+      alert(errorMessage);
+    }
   };
 
   if (!isOpen) return null;
@@ -177,16 +204,30 @@ const AgentClientsModal = ({ isOpen, onClose, agent }: AgentClientsModalProps) =
                       {getBoatName(deal.interestBoat)}
                     </div>
                     <div className="agent-clients-table-cell agent-clients-table-cell-actions">
-                      <button 
-                        className="agent-clients-edit-btn"
-                        onClick={() => handleEdit(deal)}
-                        title="Редактировать"
-                      >
-                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M8.25 3H3C2.60218 3 2.22064 3.15804 1.93934 3.43934C1.65804 3.72064 1.5 4.10218 1.5 4.5V15C1.5 15.3978 1.65804 15.7794 1.93934 16.0607C2.22064 16.342 2.60218 16.5 3 16.5H13.5C13.8978 16.5 14.2794 16.342 14.5607 16.0607C14.842 15.7794 15 15.3978 15 15V9.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                          <path d="M13.875 1.87499C14.1734 1.57662 14.578 1.40901 15 1.40901C15.422 1.40901 15.8266 1.57662 16.125 1.87499C16.4234 2.17336 16.591 2.57802 16.591 2.99999C16.591 3.42196 16.4234 3.82662 16.125 4.12499L9 11.25L6 12L6.75 8.99999L13.875 1.87499Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </button>
+                      <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                        <button 
+                          className="agent-clients-edit-btn"
+                          onClick={() => handleEdit(deal)}
+                          title="Редактировать"
+                        >
+                          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8.25 3H3C2.60218 3 2.22064 3.15804 1.93934 3.43934C1.65804 3.72064 1.5 4.10218 1.5 4.5V15C1.5 15.3978 1.65804 15.7794 1.93934 16.0607C2.22064 16.342 2.60218 16.5 3 16.5H13.5C13.8978 16.5 14.2794 16.342 14.5607 16.0607C14.842 15.7794 15 15.3978 15 15V9.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M13.875 1.87499C14.1734 1.57662 14.578 1.40901 15 1.40901C15.422 1.40901 15.8266 1.57662 16.125 1.87499C16.4234 2.17336 16.591 2.57802 16.591 2.99999C16.591 3.42196 16.4234 3.82662 16.125 4.12499L9 11.25L6 12L6.75 8.99999L13.875 1.87499Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </button>
+                        {isAdmin && (
+                          <button 
+                            className="agent-clients-edit-btn"
+                            onClick={() => handleDeleteClick(deal)}
+                            title="Удалить клиента"
+                          >
+                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M3 4.5H15M6.75 4.5V3C6.75 2.60218 6.90804 2.22064 7.18934 1.93934C7.47064 1.65804 7.85218 1.5 8.25 1.5H9.75C10.1478 1.5 10.5294 1.65804 10.8107 1.93934C11.092 2.22064 11.25 2.60218 11.25 3V4.5M13.5 4.5V15C13.5 15.3978 13.342 15.7794 13.0607 16.0607C12.7794 16.342 12.3978 16.5 12 16.5H6C5.60218 16.5 5.22064 16.342 4.93934 16.0607C4.65804 15.7794 4.5 15.3978 4.5 15V4.5H13.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M7.5 8.25V12.75M10.5 8.25V12.75" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -203,6 +244,16 @@ const AgentClientsModal = ({ isOpen, onClose, agent }: AgentClientsModalProps) =
           }}
           onSuccess={handleEditSuccess}
           deal={dealToEdit}
+        />
+
+        <DeleteConfirmModal
+          isOpen={deleteModalOpen}
+          onClose={() => {
+            setDeleteModalOpen(false);
+            setClientToDelete(null);
+          }}
+          onConfirm={handleDeleteConfirm}
+          clientName={clientToDelete?.name}
         />
       </div>
     </div>

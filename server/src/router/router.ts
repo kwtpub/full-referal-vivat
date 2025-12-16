@@ -32,6 +32,7 @@ router.get('/clients/:id', ClientController.getClientsFromAgent);
 router.get('/client/find', ClientController.findByPhone);
 // WARN: Дописать метод delete (Реализуется удаление через 2 запроса к базе данных) 
 router.delete('/client/:id', ClientController.delete);
+router.delete('/client/:id/admin', authMiddleware, ClientController.deleteById);
 router.patch('/client/:id', ClientController.update);
 
 router.post('/deal/:clientId', DealController.create);
