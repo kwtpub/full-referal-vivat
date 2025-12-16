@@ -53,8 +53,10 @@ const EditAgentModal = ({ isOpen, onClose, onSuccess, agent }: EditAgentModalPro
 
     if (!name.trim()) {
       newErrors.name = 'Имя обязательно для заполнения';
-    } else if (name.trim().length < 2) {
-      newErrors.name = 'Имя должно содержать минимум 2 символа';
+    } else if (name.trim().length < 3) {
+      newErrors.name = 'Имя должно содержать минимум 3 символа';
+    } else if (name.trim().length > 25) {
+      newErrors.name = 'Имя не должно превышать 25 символов';
     }
 
     if (!email.trim()) {
@@ -132,6 +134,7 @@ const EditAgentModal = ({ isOpen, onClose, onSuccess, agent }: EditAgentModalPro
                 onChange={(e) => setName(e.target.value)}
                 error={errors.name}
                 placeholder="Введите имя агента"
+                maxLength={25}
               />
               <Input
                 label="Email"

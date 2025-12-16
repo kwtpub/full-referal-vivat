@@ -19,7 +19,14 @@ router.post('/logout', AgentController.logout);
 router.get('/activate/:link', AgentController.activate);
 router.get('/refresh', AgentController.refresh);
 router.get('/agents', authMiddleware, AgentController.getAllUsers);
-router.patch('/agents/:id', authMiddleware, AgentController.update);
+router.patch(
+  '/agents/:id',
+  authMiddleware,
+  body('name').isLength({ min: 3, max: 25 }).withMessage('Имя должно быть от 3 до 25 символов'),
+  body('email').isEmail().withMessage('Введите корректный email'),
+  AgentController.update,
+);
+router.delete('/agents/:id', authMiddleware, AgentController.delete);
 router.get('/agents/stats', authMiddleware, AgentController.getAgentsWithStats);
 router.get('/agents/stats/total', authMiddleware, AgentController.getTotalStats);
 router.get('/agents/:agentId/stats', authMiddleware, AgentController.getAgentStats);

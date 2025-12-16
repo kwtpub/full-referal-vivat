@@ -132,4 +132,15 @@ export class AgentController {
       next(e);
     }
   }
+
+  public static async delete(req: any, res: any, next: any) {
+    try {
+      const agentId = req.params.id;
+      const refreshToken = req.cookies.refreshToken;
+      const result = await AgentService.delete(agentId, refreshToken);
+      return res.json(result);
+    } catch (e) {
+      next(e);
+    }
+  }
 }

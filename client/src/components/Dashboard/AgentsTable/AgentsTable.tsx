@@ -71,11 +71,10 @@ const AgentsTable = ({ refreshTrigger }: AgentsTableProps) => {
     if (!agentToDelete) return;
     
     try {
-      // TODO: Добавить метод удаления агента в AgentService
-      // await AgentService.delete(agentToDelete.id);
+      await AgentService.delete(agentToDelete.id);
       // Обновляем список после успешного удаления
       setAgents(prevAgents => prevAgents.filter(agent => agent.id !== agentToDelete.id));
-      setAgentToDelete(null);
+      setAgentToDelete(null); // Уведомляем Dashboard для обновления статистики
     } catch (err: any) {
       console.error('Ошибка удаления агента:', err);
       const errorMessage = err?.response?.data?.message || 'Ошибка при удалении агента';

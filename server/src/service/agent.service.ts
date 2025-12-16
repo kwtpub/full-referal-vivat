@@ -181,6 +181,11 @@ export class AgentService {
    * Обновить данные агента
    */
   public static async update(agentId: string, name: string, email: string, isActive: boolean) {
+    // Проверяем длину имени
+    if (name.trim().length < 3 || name.trim().length > 25) {
+      throw ApiError.BadRequest(400, 'Имя должно быть от 3 до 25 символов');
+    }
+
     // Проверяем, существует ли агент
     const agent = await AgentModel.findByID(agentId);
     if (!agent) {
@@ -195,7 +200,7 @@ export class AgentService {
       }
     }
 
-    return AgentModel.update(agentId, { name, email, isActive });
+    return AgentModel.update(agentId, { name: name.trim(), email, isActive });
   }
 
   /**
@@ -220,5 +225,62 @@ export class AgentService {
       salesCount,
       totalBonuses: Number(totalBonuses) || 0,
     };
+  }
+
+  /**
+   * Удалить агента (только для админов)
+   * Удаляет все связанные данные: бонусы, сделки, клиентов, токены
+   */
+  public static async delete(agentId: string, refreshToken: string) {
+    // Проверяем права доступа
+    const agentData = await TokenService.validateRefresh(refreshToken);
+    if (!agentData) {
+      throw ApiError.UnauthorizedError('Токен устарел');
+    }
+
+    const admin = agentData as { id: string; isAdmin: boolean };
+    if (!admin.isAdmin) {
+      throw ApiError.BadRequest(403, 'Доступ запрещен. Только администраторы могут удалять агентов.');
+    }
+
+    // Проверяем, существует ли агент
+    const agent = await AgentModel.findByID(agentId);
+    if (!agent) {
+      throw ApiError.BadRequest(404, 'Агент не найден');
+    }
+
+    // Нельзя удалить админа
+    if (agent.isAdmin) {
+      throw ApiError.BadRequest(400, 'Нельзя удалить администратора');
+    }
+
+    // Удаляем все связанные данные в транзакции
+    const { prisma } = await import('../prisma.singleton.js');
+    await prisma.$transaction(async (tx) => {
+      // 1. Удаляем бонусы агента
+      await tx.bonus.deleteMany({
+        where: { agentId },
+      });
+
+      // 2. Удаляем сделки агента (бонусы уже удалены, так что каскадное удаление бонусов не сработает)
+      await tx.deal.deleteMany({
+        where: { agentId },
+      });
+
+      // 3. Удаляем клиентов агента
+      await tx.client.deleteMany({
+        where: { agentId },
+      });
+
+      // 4. Удаляем токены агента (каскадное удаление через схему)
+      // Токены удалятся автоматически через onDelete: Cascade
+
+      // 5. Удаляем самого агента
+      await tx.agent.delete({
+        where: { id: agentId },
+      });
+    });
+
+    return { message: 'Агент успешно удален' };
   }
 }

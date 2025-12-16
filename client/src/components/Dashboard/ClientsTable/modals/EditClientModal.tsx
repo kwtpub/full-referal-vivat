@@ -225,9 +225,13 @@ const EditClientModal = ({ isOpen, onClose, onSuccess, deal }: EditClientModalPr
     // Проверяем, закрывается ли сделка
     const wasOpen = deal.stage !== 'Закрыто';
     const willBeClosed = selectedStage === 'Закрыто';
+    // Проверяем наличие суммы: должно быть не null, не undefined, не пустая строка и не 0
+    const hasAmount = deal.amount != null && deal.amount !== '' && Number(deal.amount) > 0;
 
-    // Если сделка закрывается и ранее не была закрыта, запрашиваем сумму
-    if (wasOpen && willBeClosed) {
+    // Агенты НЕ могут устанавливать сумму сделки - только админ при подтверждении
+    // Поэтому агентам никогда не показываем модальное окно для ввода суммы
+    // Если сделка закрывается админом, ранее не была закрыта И сумма еще не установлена, запрашиваем сумму
+    if (isAdmin && wasOpen && willBeClosed && !hasAmount) {
       // Сохраняем данные для обновления
       setPendingDealUpdate({
         interestBoat: boatName.trim(),
@@ -449,4 +453,3 @@ const EditClientModal = ({ isOpen, onClose, onSuccess, deal }: EditClientModalPr
 };
 
 export default EditClientModal;
-

@@ -57,4 +57,10 @@ export class AgentModel {
       },
     });
   }
+
+  public static async delete(id: string) {
+    return prisma.agent.delete({
+      where: { id },
+    });
+  }
 }

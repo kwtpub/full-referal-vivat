@@ -43,5 +43,9 @@ export default class AgentService {
   static async getAgentClients(agentId: string) {
     return $api.get(`/clients/${agentId}`);
   }
+
+  static async delete(agentId: string) {
+    return $api.delete(`/agents/${agentId}`);
+  }
 }
 
