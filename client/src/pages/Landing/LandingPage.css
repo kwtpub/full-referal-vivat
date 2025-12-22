@@ -2,6 +2,7 @@
   width: 100%;
   min-height: 100vh;
   background-color: #090909;
+    filter: brightness(150%);
   background-image: url('/images/VBALCK.png');
   background-size: 100% auto;
   background-position: center top;
@@ -20,6 +21,7 @@
   /* 1. Высота блока только для фона */
   .landing-page::before {
     content: '';
+    filter: brightness(150%);
     position: absolute;
     top: 0;
     left: 0;
